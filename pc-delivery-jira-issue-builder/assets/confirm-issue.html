@@ -1,0 +1,156 @@
+<!--
+  VISTA — Confirmación de creación/edición de issue (pc-delivery-jira-issue-builder, PASO 4).
+  Se pasa como widget_code a mcp__visualize__show_widget.
+
+  El skill reemplaza SOLO el objeto ISSUE del <script> (anclar el reemplazo en la línea
+  `const ISSUE = ` y su marcador de fin, NO en este comentario) con el issue armado.
+  Ejemplo de forma del objeto:
+    {
+      "mode": "create" | "edit",
+      "projectKey": "AA200",
+      "projectName": "proy-...",
+      "issuetype": "Story",
+      "issueKey": null,                     // en edit: "AA200-123"
+      "fields": [
+        { "key":"summary", "label":"Summary", "type":"string", "value":"", "required":true },
+        { "key":"customfield_10043", "label":"Como: <Rol>", "type":"textarea", "value":"", "required":true },
+        { "key":"customfield_10263", "label":"Artifact Type", "type":"select",
+          "value":"", "required":true, "options":["SOW Comercial","User Story Mapping"] }
+      ]
+    }
+  Tipos soportados: string, textarea, url, date, number, select (usa "options").
+  El resto (CSS/JS/estructura) es FIJO. Íconos Tabler (`ti ti-*`). Colores: solo tokens. Dark-safe.
+
+  ⚠️ Nada se crea/edita hasta que el usuario aprieta "Confirmar": el botón NO escribe,
+  serializa los valores finales y los manda por sendPrompt para que el skill ejecute el write
+  (con verificación post-write). Es el único mecanismo de aprobación (gate pre-write).
+-->
+<div id="pc-jira-confirm">
+  <style>
+    #pc-jira-confirm { padding:1rem 0; font-family:var(--font-sans); color:var(--text-primary); }
+    #pc-jira-confirm .eyebrow { font-size:12px; color:var(--text-muted); letter-spacing:.02em; margin-bottom:4px; }
+    #pc-jira-confirm .title { font-size:22px; font-weight:500; }
+    #pc-jira-confirm .chips { display:flex; gap:6px; flex-wrap:wrap; margin:10px 0 16px; }
+    #pc-jira-confirm .chip { font-size:11px; background:var(--surface-1); color:var(--text-secondary); padding:3px 10px; border-radius:999px; display:inline-flex; gap:5px; align-items:center; }
+    #pc-jira-confirm .fld { margin-bottom:14px; }
+    #pc-jira-confirm label { display:block; font-size:13px; font-weight:500; color:var(--text-secondary); margin-bottom:5px; }
+    #pc-jira-confirm label .req { color:var(--text-accent); margin-left:3px; }
+    #pc-jira-confirm input, #pc-jira-confirm textarea, #pc-jira-confirm select {
+      width:100%; box-sizing:border-box; font-size:14px; font-family:var(--font-sans);
+      color:var(--text-primary); background:var(--surface-2); border:1px solid var(--border-strong);
+      border-radius:8px; padding:9px 12px; }
+    #pc-jira-confirm textarea { min-height:70px; resize:vertical; }
+    #pc-jira-confirm .actions { display:flex; gap:10px; margin-top:20px; align-items:center; }
+    #pc-jira-confirm .go { border:none; cursor:pointer; background:var(--text-accent); color:var(--surface-2); font-size:14px; font-weight:600; padding:10px 20px; border-radius:8px; display:inline-flex; align-items:center; gap:7px; }
+    #pc-jira-confirm .cancel { border:1px solid var(--border); cursor:pointer; background:transparent; color:var(--text-secondary); font-size:13px; padding:10px 16px; border-radius:8px; }
+    #pc-jira-confirm .err { color:var(--text-accent); font-size:12px; margin-top:10px; min-height:16px; }
+    #pc-jira-confirm .recs { margin-top:18px; border:1px solid var(--border); border-radius:10px; padding:12px 14px; background:var(--surface-1); }
+    #pc-jira-confirm .recs h4 { margin:0 0 8px; font-size:13px; font-weight:600; color:var(--text-primary); display:flex; align-items:center; gap:6px; }
+    #pc-jira-confirm .rec { display:flex; gap:10px; align-items:flex-start; padding:8px 0; border-top:1px solid var(--border); }
+    #pc-jira-confirm .rec:first-of-type { border-top:none; }
+    #pc-jira-confirm .rec .body { flex:1; min-width:0; }
+    #pc-jira-confirm .rec .txt { font-size:13px; color:var(--text-primary); }
+    #pc-jira-confirm .rec .why { font-size:12px; color:var(--text-muted); margin-top:2px; }
+    #pc-jira-confirm .rec .apply { flex:none; border:1px solid var(--border-accent); cursor:pointer; background:var(--bg-accent); color:var(--text-accent); font-size:12px; padding:5px 11px; border-radius:7px; }
+    #pc-jira-confirm .ctxbtn { border:1px solid var(--border); cursor:pointer; background:transparent; color:var(--text-secondary); font-size:12px; padding:5px 11px; border-radius:7px; margin-top:10px; display:inline-flex; align-items:center; gap:6px; }
+  </style>
+
+  <div class="eyebrow">Jira · delivery · revisa antes de escribir</div>
+  <div class="title" id="hdr">Revisa el issue antes de crearlo</div>
+  <div class="chips" id="chips"></div>
+
+  <div id="form"></div>
+  <div class="err" id="err"></div>
+
+  <div class="recs" id="recsBox" style="display:none;">
+    <h4><i class="ti ti-bulb"></i>Recomendaciones para que quede completo</h4>
+    <div id="recs"></div>
+    <button class="ctxbtn" id="ctx"><i class="ti ti-plug-connected"></i>Revisar el contexto del proyecto (conectores)</button>
+  </div>
+
+  <div class="actions">
+    <button class="go" id="go"><i class="ti ti-check"></i><span id="goTxt">Confirmar y crear</span></button>
+    <button class="cancel" id="cancel">Cancelar</button>
+  </div>
+</div>
+<script>
+  const ISSUE = /*__ISSUE__*/{
+    "mode":"create","projectKey":"AA200","projectName":"proy-aeropuertosargentina-cargas",
+    "issuetype":"Story","issueKey":null,
+    "fields":[
+      {"key":"summary","label":"Summary","type":"string","value":"","required":true},
+      {"key":"customfield_10043","label":"Como: <Rol/Perfil>","type":"textarea","value":"","required":true},
+      {"key":"customfield_10044","label":"Quiero: <Objetivo>","type":"textarea","value":"","required":true},
+      {"key":"customfield_10045","label":"Para: <Beneficio>","type":"textarea","value":"","required":true},
+      {"key":"customfield_10155","label":"Criterios de Aceptacion (DADO/CUANDO/ENTONCES)","type":"textarea","value":"","required":true}
+    ]
+  }/*__END__*/;
+
+  // El skill llena RECS con recomendaciones (contexto/completitud). Cada una: {txt, why, action}.
+  // action = prompt que dispara sendPrompt al apretar "Aplicar". Si queda [], la sección no se muestra.
+  const RECS = /*__RECS__*/[
+    {"txt":"Vincular esta Story a un Epic","why":"El proyecto tiene Epics pero esta Story quedaría suelta; agrupar mejora el seguimiento.","action":"vincula la story al epic correspondiente"},
+    {"txt":"Cargar el Artifact 'User Story Mapping' (falta en Sprint 0)","why":"Es un entregable esperado de la fase según el Blueprint y no está registrado.","action":"registra el artifact User Story Mapping del proyecto"}
+  ]/*__END__*/;
+
+  const isEdit = ISSUE.mode === 'edit';
+  document.getElementById('hdr').textContent = isEdit
+    ? ('Revisa los cambios de ' + ISSUE.issueKey) : 'Revisa el issue antes de crearlo';
+  document.getElementById('goTxt').textContent = isEdit ? 'Confirmar y guardar' : 'Confirmar y crear';
+
+  const chips = document.getElementById('chips');
+  const mk = (t,icon)=>{ const s=document.createElement('span'); s.className='chip'; s.innerHTML='<i class="ti ti-'+icon+'"></i>'+t; chips.appendChild(s); };
+  mk(ISSUE.issuetype,'category');
+  mk(ISSUE.projectKey + (ISSUE.projectName? ' · '+ISSUE.projectName : ''),'folder');
+  if (isEdit) mk(ISSUE.issueKey,'pencil');
+
+  const form = document.getElementById('form');
+  const inputs = {};
+  ISSUE.fields.forEach(f=>{
+    const wrap=document.createElement('div'); wrap.className='fld';
+    const lab=document.createElement('label');
+    lab.innerHTML = f.label + (f.required ? '<span class="req">*</span>' : '');
+    wrap.appendChild(lab);
+    let el;
+    if (f.type==='textarea'){ el=document.createElement('textarea'); el.value=f.value||''; }
+    else if (f.type==='select'){
+      el=document.createElement('select');
+      const blank=document.createElement('option'); blank.value=''; blank.textContent='— elige —'; el.appendChild(blank);
+      (f.options||[]).forEach(o=>{ const op=document.createElement('option'); op.value=o; op.textContent=o; if(o===f.value) op.selected=true; el.appendChild(op); });
+    } else {
+      el=document.createElement('input');
+      el.type = f.type==='url'?'url' : f.type==='date'?'date' : f.type==='number'?'number' : 'text';
+      el.value=f.value||'';
+    }
+    inputs[f.key]=el; wrap.appendChild(el); form.appendChild(wrap);
+  });
+
+  document.getElementById('go').onclick = ()=>{
+    const errEl=document.getElementById('err'); errEl.textContent='';
+    const out={}; const missing=[];
+    ISSUE.fields.forEach(f=>{
+      const v=(inputs[f.key].value||'').trim();
+      if (f.required && !v) missing.push(f.label);
+      if (v) out[f.key]=v;
+    });
+    if (missing.length){ errEl.textContent='Faltan campos obligatorios: '+missing.join(', '); return; }
+    const payload = { mode:ISSUE.mode, projectKey:ISSUE.projectKey, issuetype:ISSUE.issuetype, issueKey:ISSUE.issueKey, fields:out };
+    const verb = isEdit ? 'guarda los cambios en '+ISSUE.issueKey : 'crea el issue';
+    sendPrompt('CONFIRMO: '+verb+'. Datos finales (JSON): '+JSON.stringify(payload));
+  };
+  document.getElementById('cancel').onclick = ()=> sendPrompt('cancela, no crees ni edites el issue');
+
+  // Recomendaciones (contexto + completitud del proyecto)
+  const recsBox=document.getElementById('recsBox'), recsHost=document.getElementById('recs');
+  if (RECS && RECS.length){
+    recsBox.style.display='block';
+    RECS.forEach(r=>{
+      const row=document.createElement('div'); row.className='rec';
+      row.innerHTML='<div class="body"><div class="txt">'+r.txt+'</div>'+(r.why?'<div class="why">'+r.why+'</div>':'')+'</div>'+
+                    (r.action?'<button class="apply">Aplicar</button>':'');
+      const b=row.querySelector('.apply'); if(b) b.onclick=()=>sendPrompt(r.action);
+      recsHost.appendChild(row);
+    });
+  }
+  document.getElementById('ctx').onclick = ()=> sendPrompt('revisa el contexto del proyecto '+ISSUE.projectKey+' con los conectores (Gmail, Calendar, Drive, Confluence, Slack, ReadAI, Salesforce) para completar campos y detectar lo que falta');
+</script>

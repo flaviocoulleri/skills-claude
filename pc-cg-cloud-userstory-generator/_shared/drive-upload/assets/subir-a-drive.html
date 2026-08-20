@@ -1,0 +1,41 @@
+<!-- Gate de subida a Drive (Patrón A). Canónico en _shared/drive-upload/.
+     Se muestra al terminar el entregable Y en cada nueva versión.
+     Slots: {{RUTA_CARPETA}} {{NIVELES_A_CREAR}} {{NOMBRE_ARCHIVO}} {{VERSION}} {{AREA_LABEL}} -->
+<h2 class="sr-only">Confirmar la carpeta de Drive donde se guarda el entregable, elegir otra carpeta, o dejarlo sin subir</h2>
+<div style="padding:0.5rem 0; font-family:var(--font-sans);">
+  <div style="font-size:12px; color:var(--color-text-tertiary); margin-bottom:6px;">{{AREA_LABEL}} · Dónde queda guardado</div>
+  <div style="font-size:18px; font-weight:500; color:var(--color-text-primary); margin-bottom:6px;">Lo subo a Drive para que no se pierda</div>
+  <div style="font-size:13px; color:var(--color-text-secondary); line-height:1.5; margin-bottom:14px;">Lo que queda sólo en el chat no lo encuentra el resto del equipo ni queda en el expediente. Confirmá la carpeta o elegí otra.</div>
+
+  <div style="border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:14px 16px; margin-bottom:16px; display:flex; gap:12px; align-items:flex-start;">
+    <i class="ti ti-folder" style="font-size:22px; color:var(--color-text-secondary); margin-top:1px;" aria-hidden="true"></i>
+    <div>
+      <div style="font-size:14px; color:var(--color-text-primary); line-height:1.5;">{{RUTA_CARPETA}}</div>
+      <div style="font-size:12px; color:var(--color-text-tertiary); margin-top:4px;">Archivo: {{NOMBRE_ARCHIVO}} · versión {{VERSION}}</div>
+      <div style="font-size:12px; color:var(--color-text-tertiary); margin-top:2px;">{{NIVELES_A_CREAR}}</div>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px;">
+
+    <button type="button" onclick="sendPrompt('Sí, subilo a esa carpeta.')" style="cursor:pointer; text-align:left; border:1px solid var(--color-border-info); border-radius:var(--border-radius-lg); padding:20px; background:transparent; display:flex; flex-direction:column; gap:8px;">
+      <span style="align-self:flex-start; font-size:11px; padding:2px 8px; border-radius:999px; background:var(--color-background-info); color:var(--color-text-info);">Recomendado</span>
+      <i class="ti ti-cloud-upload" style="font-size:26px; color:var(--color-text-secondary);" aria-hidden="true"></i>
+      <span style="font-size:16px; font-weight:500; color:var(--color-text-primary);">Subir ahí</span>
+      <span style="font-size:13px; color:var(--color-text-secondary); line-height:1.5;">Creo los niveles que falten y subo el archivo. Te paso el link cuando esté.</span>
+    </button>
+
+    <button type="button" onclick="sendPrompt('Quiero subirlo a otra carpeta, te paso cuál.')" style="cursor:pointer; text-align:left; border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:20px; background:transparent; display:flex; flex-direction:column; gap:8px;">
+      <i class="ti ti-folder-search" style="font-size:26px; color:var(--color-text-secondary);" aria-hidden="true"></i>
+      <span style="font-size:16px; font-weight:500; color:var(--color-text-primary);">Elegir otra carpeta</span>
+      <span style="font-size:13px; color:var(--color-text-secondary); line-height:1.5;">Pasame el link o el nombre y la resuelvo contra Drive antes de subir.</span>
+    </button>
+
+    <button type="button" onclick="sendPrompt('Por ahora no lo subas a Drive.')" style="cursor:pointer; text-align:left; border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:20px; background:transparent; display:flex; flex-direction:column; gap:8px; opacity:0.78;">
+      <i class="ti ti-clock-pause" style="font-size:26px; color:var(--color-text-tertiary);" aria-hidden="true"></i>
+      <span style="font-size:16px; font-weight:500; color:var(--color-text-primary);">Ahora no</span>
+      <span style="font-size:13px; color:var(--color-text-secondary); line-height:1.5;">Queda sólo en esta conversación: sin respaldo y sin que el equipo pueda encontrarlo.</span>
+    </button>
+
+  </div>
+</div>
