@@ -1,0 +1,23 @@
+{
+  "skill_name": "pc-delivery-presentation-builder",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Ármame la presentación de status semanal del proyecto Implementación CRM Lácteos del Valle para el steering con el sponsor.",
+      "expected_output": "El skill debe: (1) confirmar Área = Delivery (implícita) y hito = Status/Steering; (2) NO pedir industria ni resolver pricing, y OMITIR por completo la sección de inversión (delivery no cotiza, sin placeholder); (3) ofrecer una base de Drive de delivery (Patrón C) y capturar contexto de proyecto con el form paso1b-proyecto (proyecto, cliente, audiencia = sponsor, hito, período cubierto); (4) barrer conectores con fuente primaria Jira/Confluence (issues cerrados en el período, blockers abiertos, hitos cumplidos) + Slack/ReadAI. El prompt final debe seguir el skeleton canónico y usar el ARCO NARRATIVO DE DELIVERY del bloque deck-craft (dónde estamos → qué logramos con evidencia → qué cambió/aprendimos → qué viene → el pedido/cierre), una idea por slide, headlines que afirman. La ruta de Drive destino es J-Delivery/B-Proyectos/{Cliente}/{Proyecto} (sin país). Cero inversión, cero placeholders.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Necesito el kickoff del proyecto de AgentForce con Farmatodo. La audiencia es el sponsor y el equipo del cliente.",
+      "expected_output": "El skill debe: (1) confirmar Delivery, hito = Kickoff; (2) ofrecer bases de delivery (Patrón C) reconciliadas contra la carpeta 1Tdy-IVpVhDmMECODq_bhZBdIfS5wqu_F; (3) capturar contexto de proyecto (proyecto, cliente = Farmatodo, audiencia = sponsor + equipo, hito = Kickoff) y ofrecer fetch de la web del cliente si la pasan; (4) NO incluir slide de inversión. El prompt final aplica el arco de delivery (para un kickoff: dónde arrancamos, alcance/objetivos, cómo trabajamos, qué necesitamos del cliente, próximos hitos), sigue el skeleton, incluye el bloque deck-craft, y respeta los gates de Claude Design (Design System único + link del proyecto, de a una). Cero placeholders.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Ármame una propuesta comercial de Salesforce para presentarle a Banco Aurora, todavía no hay Opp cargada.",
+      "expected_output": "Este pedido es COMERCIAL (propuesta a cliente externo), no delivery. La red de seguridad de área (Paso 0) debe detectarlo y DERIVAR —transición invisible— a pc-sales-presentation-builder, en lenguaje natural ('esto es una propuesta comercial, la armamos por el otro lado'). Este skill NO debe capturar contexto de proyecto ni ofrecer bases de delivery: reconoce que no es su área y deriva.",
+      "files": []
+    }
+  ]
+}

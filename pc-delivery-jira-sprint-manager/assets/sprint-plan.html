@@ -1,0 +1,104 @@
+<!--
+  VISTA — Planificación de sprint (pc-delivery-jira-sprint-manager, PASO 4).
+  Se pasa como widget_code a mcp__visualize__show_widget.
+  El skill reemplaza SOLO el objeto `const PLAN = ...` (anclar en esa línea y su marcador de fin,
+  NO en este comentario):
+    { "projectKey":"ZCLAUDE","boardId":482,"capacity":30,
+      "sprint":{"name":"Sprint 5 — 21/07","start":"2026-07-21","end":"2026-08-01","goal":""},
+      "candidates":[ {"key":"ZCLAUDE-12","summary":"...","estimate":5,"carryover":false} ] }
+  El PM ajusta datos del sprint, tilda candidatos y ve el capacity vs Σ pts. Al confirmar,
+  serializa el sprint + los issues tildados por sendPrompt. CSS/JS FIJO. Tokens. Dark-safe.
+-->
+<div id="pc-jira-sprint">
+  <style>
+    #pc-jira-sprint { padding:1rem 0; font-family:var(--font-sans); color:var(--text-primary); }
+    #pc-jira-sprint .eyebrow { font-size:12px; color:var(--text-muted); margin-bottom:4px; }
+    #pc-jira-sprint .title { font-size:22px; font-weight:500; }
+    #pc-jira-sprint .grid { display:flex; gap:10px; flex-wrap:wrap; margin:14px 0; }
+    #pc-jira-sprint .fld { display:flex; flex-direction:column; gap:4px; }
+    #pc-jira-sprint label { font-size:12px; color:var(--text-secondary); }
+    #pc-jira-sprint input, #pc-jira-sprint select { font-size:13px; font-family:var(--font-sans); color:var(--text-primary); background:var(--surface-2); border:1px solid var(--border-strong); border-radius:7px; padding:7px 10px; }
+    #pc-jira-sprint .cap { display:flex; align-items:center; gap:10px; background:var(--surface-1); border:1px solid var(--border); border-radius:10px; padding:10px 14px; margin-bottom:12px; }
+    #pc-jira-sprint .bar { flex:1; height:8px; background:var(--surface-2); border-radius:999px; overflow:hidden; }
+    #pc-jira-sprint .bar > span { display:block; height:100%; background:var(--text-accent); }
+    #pc-jira-sprint .bar.over > span { background:#e5484d; }
+    #pc-jira-sprint .capn { font-size:13px; font-weight:600; flex:none; }
+    #pc-jira-sprint .row { display:flex; gap:9px; align-items:center; padding:8px 0; border-top:1px solid var(--border); }
+    #pc-jira-sprint .row .k { font-size:11px; color:var(--text-muted); flex:none; width:92px; }
+    #pc-jira-sprint .row .s { flex:1; font-size:13px; }
+    #pc-jira-sprint .row .e { flex:none; font-size:12px; color:var(--text-secondary); width:44px; text-align:right; }
+    #pc-jira-sprint .co { flex:none; font-size:10px; color:var(--text-muted); border:1px solid var(--border); border-radius:999px; padding:1px 7px; }
+    #pc-jira-sprint .actions { display:flex; gap:10px; align-items:center; margin-top:16px; }
+    #pc-jira-sprint .go { border:none; cursor:pointer; background:var(--text-accent); color:var(--surface-2); font-size:14px; font-weight:600; padding:10px 20px; border-radius:8px; display:inline-flex; gap:7px; align-items:center; }
+    #pc-jira-sprint .ctxbtn { border:1px solid var(--border); cursor:pointer; background:transparent; color:var(--text-secondary); font-size:12px; padding:8px 13px; border-radius:8px; }
+  </style>
+
+  <div class="eyebrow">Jira · delivery · planifica el sprint antes de comprometer</div>
+  <div class="title">Planificación de sprint</div>
+
+  <div class="grid" id="sprintForm"></div>
+
+  <div class="cap">
+    <span class="capn" id="capTxt"></span>
+    <div class="bar" id="bar"><span id="barFill"></span></div>
+  </div>
+
+  <div id="list"></div>
+
+  <div class="actions">
+    <button class="go" id="go"><i class="ti ti-rocket"></i>Confirmar el sprint</button>
+    <button class="ctxbtn" id="ctx"><i class="ti ti-plug-connected"></i>Revisar contexto (Calendar/Slack)</button>
+  </div>
+</div>
+<script>
+  const PLAN = /*__PLAN__*/{
+    "projectKey":"ZCLAUDE","boardId":482,"capacity":30,
+    "sprint":{"name":"IMPNTR Sprint 1","duration":"2 weeks","start":"2026-07-21","end":"2026-08-01","goal":""},
+    "candidates":[
+      {"key":"ZCLAUDE-12","summary":"Cargar la quote desde el banco","estimate":5,"carryover":false},
+      {"key":"ZCLAUDE-9","summary":"Sincronizar la quote (carry-over)","estimate":3,"carryover":true}
+    ]
+  }/*__END__*/;
+
+  const sf=document.getElementById('sprintForm');
+  const fdef=[['name','Nombre'],['duration','Duración'],['start','Inicio'],['end','Fin'],['goal','Objetivo']];
+  const finp={};
+  fdef.forEach(([k,l])=>{
+    const w=document.createElement('div'); w.className='fld';
+    const lab=document.createElement('label'); lab.textContent=l;
+    let inp;
+    if (k==='duration'){
+      inp=document.createElement('select');
+      ['custom','1 week','2 weeks','3 weeks','4 weeks'].forEach(o=>{ const op=document.createElement('option'); op.value=o; op.textContent=o; if(o===(PLAN.sprint.duration||'2 weeks')) op.selected=true; inp.appendChild(op); });
+    } else {
+      inp=document.createElement('input'); inp.type=(k==='start'||k==='end')?'date':'text'; inp.value=PLAN.sprint[k]||'';
+    }
+    finp[k]=inp; w.appendChild(lab); w.appendChild(inp); sf.appendChild(w);
+  });
+
+  const list=document.getElementById('list'); const reg=[];
+  PLAN.candidates.forEach(c=>{
+    const row=document.createElement('div'); row.className='row';
+    const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=true;
+    row.appendChild(cb);
+    row.insertAdjacentHTML('beforeend','<span class="k">'+c.key+'</span><span class="s">'+c.summary+'</span>'+(c.carryover?'<span class="co">carry-over</span>':'')+'<span class="e">'+(c.estimate||0)+' pts</span>');
+    cb.addEventListener('change',updateCap); reg.push({c,cb}); list.appendChild(row);
+  });
+
+  function updateCap(){
+    const sum=reg.filter(r=>r.cb.checked).reduce((a,r)=>a+(r.c.estimate||0),0);
+    const cap=PLAN.capacity||0;
+    document.getElementById('capTxt').textContent=sum+' / '+cap+' pts';
+    const bar=document.getElementById('bar'); const pct=cap?Math.min(100,Math.round(sum/cap*100)):0;
+    document.getElementById('barFill').style.width=pct+'%';
+    bar.classList.toggle('over', sum>cap);
+  }
+  updateCap();
+
+  document.getElementById('go').onclick=()=>{
+    const keys=reg.filter(r=>r.cb.checked).map(r=>r.c.key);
+    const sprint={name:finp.name.value.trim(),duration:finp.duration.value,start:finp.start.value,end:finp.end.value,goal:finp.goal.value.trim()};
+    sendPrompt('CONFIRMO: planifica el sprint en '+PLAN.projectKey+' (board '+PLAN.boardId+'). Datos (JSON): '+JSON.stringify({sprint,issues:keys}));
+  };
+  document.getElementById('ctx').onclick=()=> sendPrompt('revisa el contexto para el capacity del sprint en '+PLAN.projectKey+' con Calendar (feriados/PTO del equipo) y Slack (bloqueos), antes de comprometer');
+</script>

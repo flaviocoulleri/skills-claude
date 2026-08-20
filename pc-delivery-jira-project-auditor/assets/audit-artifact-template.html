@@ -1,0 +1,375 @@
+<!--
+  ⚠ DEPRECATED desde v1.6.0 — NO USAR.
+
+  Este template fue diseñado para mcp__cowork__create_artifact (panel lateral).
+  Desde la v1.6.0 el skill unifica TODA la UI a chat-inline vía
+  mcp__visualize__show_widget. Razón: cuando un sendPrompt del sidebar no se
+  enrutea de vuelta al chat principal, el flujo se rompe y el PM pierde contexto.
+
+  La spec actual del widget de PASO 3 vive en el SKILL.md, sección
+  "Render del preview — chat-inline (NO sidebar)". El widget se construye
+  inline cada vez que el skill arranca PASO 3, sin leer este archivo.
+
+  Se mantiene en el repo sólo como referencia histórica del diseño visual
+  (paleta de colores, layout de tabla, estructura de badges) que sí se reutiliza
+  en los widgets show_widget — pero el código HTML directamente NO se carga.
+
+  ---
+  (Contenido legado, a continuación)
+
+  Template del artifact de revisión — pc-delivery-jira-project-auditor (PASO 3)
+
+  Cómo usarlo desde el skill:
+    1. Leer este archivo como string.
+    2. Reemplazar los placeholders:
+         __AUDIT_DATA__   → JSON.stringify del array de hallazgos (max 10).
+         __PROJECT_KEY__  → string con el key del proyecto Jira (ej: "AVELLANEDA").
+         __BATCH_INFO__   → string con info de batch (ej: "batch 1/4 — 10 de 36 hallazgos").
+    3. Pasarle el HTML resultante a mcp__cowork__create_artifact.
+
+  Schema esperado de cada hallazgo en __AUDIT_DATA__:
+    {
+      "id": "unique-id",                 // string, identifica el hallazgo
+      "issueKey": "AVELLANEDA-102",      // string
+      "issueTitle": "Implementar SSO",   // string
+      "category": "unassigned" |         // enum
+                  "overdue" |
+                  "no_date" |
+                  "blocked" |
+                  "no_release" |
+                  "artifact_orphan",
+      "currentValue": "...",             // string, valor actual (display only)
+      "proposedValue": "...",            // string, valor sugerido (editable)
+      "matches": [...],                  // array opcional — sólo para artifact_orphan
+                                         //   [{ url, name, source: "drive"|"figma", score }]
+      "confidence": "high"|"medium"|"low", // string
+      "actionType": "edit" | "info"      // info → no se ejecuta (ej: bloqueadas)
+    }
+
+  Comportamiento:
+    - El usuario puede editar el campo proposedValue inline.
+    - Toggle individual para descartar cada cambio.
+    - Para artifact_orphan: dropdown con matches + opción "manual".
+    - Click en "Confirmar y aplicar" → sendPrompt con el JSON del subset aprobado.
+-->
+<style>
+  :root {
+    --pc-bg: #ffffff;
+    --pc-fg: #181818;
+    --pc-muted: #5e5e5e;
+    --pc-border: #e0e0e0;
+    --pc-accent: #1a73e8;
+    --pc-success: #137333;
+    --pc-warning: #b06000;
+    --pc-danger: #c5221f;
+    --pc-card: #fafafa;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: var(--pc-fg);
+    margin: 0;
+    background: transparent;
+  }
+  .audit-container {
+    max-width: 1100px;
+    padding: 16px;
+  }
+  .audit-header {
+    border-bottom: 1px solid var(--pc-border);
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+  }
+  .audit-header h2 {
+    margin: 0 0 4px 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .audit-header .meta {
+    font-size: 12px;
+    color: var(--pc-muted);
+  }
+  .findings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .findings-table thead th {
+    background: var(--pc-card);
+    text-align: left;
+    padding: 8px 10px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--pc-border);
+  }
+  .findings-table tbody td {
+    padding: 10px;
+    border-bottom: 1px solid var(--pc-border);
+    vertical-align: top;
+  }
+  .findings-table tr.discarded td {
+    opacity: 0.45;
+    text-decoration: line-through;
+  }
+  .findings-table tr.info-only td {
+    background: #fff8e1;
+  }
+  .category-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .cat-unassigned     { background: #e8f0fe; color: #1a73e8; }
+  .cat-overdue        { background: #fce8e6; color: #c5221f; }
+  .cat-no_date        { background: #fef7e0; color: #b06000; }
+  .cat-blocked        { background: #f3e5f5; color: #7b1fa2; }
+  .cat-no_release     { background: #e6f4ea; color: #137333; }
+  .cat-artifact_orphan{ background: #fff3e0; color: #e65100; }
+  .issue-link {
+    color: var(--pc-accent);
+    text-decoration: none;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 12px;
+  }
+  .issue-link:hover { text-decoration: underline; }
+  .issue-title {
+    margin-top: 2px;
+    color: var(--pc-fg);
+  }
+  .editable-input, .editable-select {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid var(--pc-border);
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: inherit;
+    background: var(--pc-bg);
+  }
+  .editable-input:focus, .editable-select:focus {
+    outline: none;
+    border-color: var(--pc-accent);
+    box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.15);
+  }
+  .current-value {
+    color: var(--pc-muted);
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+  .confidence {
+    font-size: 11px;
+    margin-top: 4px;
+    color: var(--pc-muted);
+  }
+  .conf-low { color: var(--pc-warning); }
+  .toggle-cell { width: 60px; text-align: center; }
+  .toggle-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--pc-accent);
+  }
+  .audit-footer {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--pc-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  .summary { font-size: 12px; color: var(--pc-muted); }
+  .button-group { display: flex; gap: 8px; }
+  .btn {
+    padding: 8px 16px;
+    border: 1px solid var(--pc-border);
+    border-radius: 4px;
+    background: var(--pc-bg);
+    color: var(--pc-fg);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .btn:hover { background: var(--pc-card); }
+  .btn-primary {
+    background: var(--pc-accent);
+    color: white;
+    border-color: var(--pc-accent);
+  }
+  .btn-primary:hover { background: #1557b0; }
+  .btn-danger {
+    background: var(--pc-bg);
+    color: var(--pc-danger);
+    border-color: var(--pc-danger);
+  }
+  .info-banner {
+    padding: 8px 12px;
+    background: #fff8e1;
+    border-left: 3px solid var(--pc-warning);
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: var(--pc-fg);
+    border-radius: 2px;
+  }
+</style>
+
+<div class="audit-container">
+  <div class="audit-header">
+    <h2>Auditoría de proyecto: <span id="project-key">__PROJECT_KEY__</span></h2>
+    <div class="meta" id="batch-info">__BATCH_INFO__</div>
+  </div>
+
+  <div id="info-banner" class="info-banner" style="display: none;">
+    Las filas resaltadas en amarillo son <strong>informativas</strong> (no se ejecutan automáticamente — el skill no resuelve dependencias por su cuenta).
+  </div>
+
+  <table class="findings-table">
+    <thead>
+      <tr>
+        <th style="width: 130px;">Categoría</th>
+        <th style="width: 220px;">Issue</th>
+        <th>Cambio propuesto</th>
+        <th class="toggle-cell">Aplicar</th>
+      </tr>
+    </thead>
+    <tbody id="findings-body"></tbody>
+  </table>
+
+  <div class="audit-footer">
+    <div class="summary" id="summary">0 cambios seleccionados</div>
+    <div class="button-group">
+      <button class="btn btn-danger" onclick="cancelAudit()">Cancelar</button>
+      <button class="btn btn-primary" onclick="confirmAudit()">Confirmar y aplicar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const AUDIT_DATA = __AUDIT_DATA__;
+  const PROJECT_KEY = "__PROJECT_KEY__";
+
+  const CATEGORY_LABELS = {
+    unassigned: "Sin asignar",
+    overdue: "Vencida",
+    no_date: "Sin fecha",
+    blocked: "Bloqueada",
+    no_release: "Sin release",
+    artifact_orphan: "Artefacto"
+  };
+
+  const state = AUDIT_DATA.map(f => ({
+    ...f,
+    selected: f.actionType !== "info",
+    editedValue: f.proposedValue
+  }));
+
+  function render() {
+    const body = document.getElementById("findings-body");
+    body.innerHTML = "";
+    let hasInfo = false;
+
+    state.forEach((f, idx) => {
+      const tr = document.createElement("tr");
+      if (!f.selected) tr.classList.add("discarded");
+      if (f.actionType === "info") { tr.classList.add("info-only"); hasInfo = true; }
+
+      // Categoría
+      const tdCat = document.createElement("td");
+      tdCat.innerHTML = `<span class="category-badge cat-${f.category}">${CATEGORY_LABELS[f.category] || f.category}</span>`;
+      tr.appendChild(tdCat);
+
+      // Issue
+      const tdIssue = document.createElement("td");
+      tdIssue.innerHTML = `
+        <a class="issue-link" href="https://procontacto.atlassian.net/browse/${f.issueKey}" target="_blank">${f.issueKey}</a>
+        <div class="issue-title">${escapeHtml(f.issueTitle)}</div>
+      `;
+      tr.appendChild(tdIssue);
+
+      // Cambio propuesto
+      const tdProp = document.createElement("td");
+      if (f.actionType === "info") {
+        tdProp.innerHTML = `<em style="color: var(--pc-muted);">${escapeHtml(f.proposedValue)}</em>`;
+      } else if (f.category === "artifact_orphan" && f.matches && f.matches.length) {
+        const options = f.matches.map((m, i) =>
+          `<option value="${escapeAttr(m.url)}" ${i === 0 ? "selected" : ""}>${escapeHtml(m.source)}: ${escapeHtml(m.name)} (score: ${m.score})</option>`
+        ).join("");
+        tdProp.innerHTML = `
+          <div class="current-value">URL actual: ${f.currentValue ? escapeHtml(f.currentValue) : "<em>vacía</em>"}</div>
+          <select class="editable-select" data-idx="${idx}" onchange="onEdit(this)">
+            ${options}
+            <option value="__manual__">— Cargar URL manualmente —</option>
+          </select>
+        `;
+      } else {
+        tdProp.innerHTML = `
+          <div class="current-value">Actual: ${f.currentValue ? escapeHtml(f.currentValue) : "<em>vacío</em>"}</div>
+          <input class="editable-input" type="text" value="${escapeAttr(f.editedValue)}" data-idx="${idx}" onchange="onEdit(this)" />
+          ${f.confidence === "low" ? `<div class="confidence conf-low">⚠ Confianza baja — revisa antes de aplicar</div>` : ""}
+        `;
+      }
+      tr.appendChild(tdProp);
+
+      // Toggle
+      const tdToggle = document.createElement("td");
+      tdToggle.className = "toggle-cell";
+      if (f.actionType === "info") {
+        tdToggle.innerHTML = `<span style="color: var(--pc-muted); font-size: 11px;">info</span>`;
+      } else {
+        tdToggle.innerHTML = `<input type="checkbox" class="toggle-checkbox" ${f.selected ? "checked" : ""} data-idx="${idx}" onchange="onToggle(this)" />`;
+      }
+      tr.appendChild(tdToggle);
+
+      body.appendChild(tr);
+    });
+
+    document.getElementById("info-banner").style.display = hasInfo ? "block" : "none";
+    updateSummary();
+  }
+
+  function onEdit(el) {
+    const idx = parseInt(el.dataset.idx, 10);
+    state[idx].editedValue = el.value;
+  }
+
+  function onToggle(el) {
+    const idx = parseInt(el.dataset.idx, 10);
+    state[idx].selected = el.checked;
+    render();
+  }
+
+  function updateSummary() {
+    const count = state.filter(f => f.selected && f.actionType !== "info").length;
+    document.getElementById("summary").textContent = `${count} cambio${count === 1 ? "" : "s"} seleccionado${count === 1 ? "" : "s"}`;
+  }
+
+  function confirmAudit() {
+    const approved = state
+      .filter(f => f.selected && f.actionType !== "info")
+      .map(f => ({
+        id: f.id,
+        issueKey: f.issueKey,
+        category: f.category,
+        appliedValue: f.editedValue
+      }));
+    if (approved.length === 0) {
+      if (!confirm("No hay cambios seleccionados. ¿Cerrar el artifact sin aplicar?")) return;
+    }
+    const payload = JSON.stringify({ project: PROJECT_KEY, approved }, null, 2);
+    sendPrompt("Aprobé estos cambios desde el artifact:\n```json\n" + payload + "\n```\nAplicalos contra Jira.");
+  }
+
+  function cancelAudit() {
+    sendPrompt("Cancelé la auditoría desde el artifact. No apliques nada.");
+  }
+
+  function escapeHtml(s) {
+    return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+  }
+  function escapeAttr(s) { return escapeHtml(s); }
+
+  render();
+</script>

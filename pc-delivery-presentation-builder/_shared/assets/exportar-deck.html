@@ -1,0 +1,66 @@
+<!-- Exportar el entregable (Patrón A). Compartido por la familia presentation-builder.
+     Se muestra en el chat JUSTO DESPUÉS de publicar el artefacto — nunca antes, y nunca dentro
+     del propio artefacto: ahí `sendPrompt` no existe y los botones quedarían muertos.
+     Slots: {{TIPO}} (presentación / documento). Estático salvo esos slots. -->
+<h2 class="sr-only">Elegir en qué formatos entregar la presentación ya creada: PDF, PowerPoint, imágenes o HTML autocontenido</h2>
+<div style="padding:0.5rem 0; font-family:var(--font-sans);">
+  <div style="font-size:18px; font-weight:500; color:var(--color-text-primary); margin-bottom:6px;">¿Qué hacemos con la presentación?</div>
+  <div style="font-size:13px; color:var(--color-text-secondary); line-height:1.5; margin-bottom:10px;">Si algo no quedó como esperabas, se ajusta acá y la presentación se actualiza en el mismo lugar. Los formatos salen todos de ella, así que conviene dejarla fina antes de exportar — y si igual cambia después, se re-exporta y listo.</div>
+  <div style="font-size:12px; color:var(--color-text-tertiary); line-height:1.5; margin-bottom:16px;">Elijas lo que elijas, el original queda guardado en la carpeta de Drive del cliente y te paso el link: así el equipo sabe cuál es la versión que circula, y cualquier formato se puede volver a generar desde ahí.</div>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px;">
+
+    <button type="button" onclick="sendPrompt('Quiero ajustar la presentación antes de exportarla.')" style="cursor:pointer; text-align:left; border:1px solid var(--color-border-info); border-radius:var(--border-radius-lg); padding:20px; background:transparent; display:flex; flex-direction:column; gap:8px;">
+      <span style="align-self:flex-start; font-size:11px; padding:2px 8px; border-radius:999px; background:var(--color-background-info); color:var(--color-text-info);">Empezá por acá si algo no cuadra</span>
+      <i class="ti ti-edit" style="font-size:26px; color:var(--color-text-secondary);" aria-hidden="true"></i>
+      <span style="font-size:16px; font-weight:500; color:var(--color-text-primary);">Ajustar la presentación</span>
+      <span style="font-size:13px; color:var(--color-text-secondary); line-height:1.5;">Decime qué cambiar —un texto, un slide entero, el orden, el nivel de detalle— y la actualizo.</span>
+      <span style="font-size:12px; color:var(--color-text-tertiary); margin-top:2px;">Se actualiza en el mismo lugar y sube de versión; no aparece una presentación nueva.</span>
+    </button>
+
+    <button type="button" onclick="sendPrompt('Exportá el deck a PDF y dejámelo acá.')" style="cursor:pointer; text-align:left; border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:20px; background:transparent; display:flex; flex-direction:column; gap:8px;">
+      <span style="align-self:flex-start; font-size:11px; padding:2px 8px; border-radius:999px; background:var(--color-background-tertiary); color:var(--color-text-secondary);">El más pedido</span>
+      <i class="ti ti-file-type-pdf" style="font-size:26px; color:var(--color-text-secondary);" aria-hidden="true"></i>
+      <span style="font-size:16px; font-weight:500; color:var(--color-text-primary);">PDF</span>
+      <span style="font-size:13px; color:var(--color-text-secondary); line-height:1.5;">Una página por slide, 16:9, con el texto seleccionable.</span>
+      <span style="font-size:12px; color:var(--color-text-tertiary); margin-top:2px;">Para mail, impresión o leave-behind.</span>
+    </button>
+
+    <button type="button" onclick="sendPrompt('Exportá el deck a PowerPoint (.pptx) y dejámelo acá.')" style="cursor:pointer; text-align:left; border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:20px; background:transparent; display:flex; flex-direction:column; gap:8px;">
+      <i class="ti ti-file-type-ppt" style="font-size:26px; color:var(--color-text-secondary);" aria-hidden="true"></i>
+      <span style="font-size:16px; font-weight:500; color:var(--color-text-primary);">PowerPoint (.pptx)</span>
+      <span style="font-size:13px; color:var(--color-text-secondary); line-height:1.5;">Un slide por diapositiva, a página completa. Se ve idéntico; el texto no queda editable en PowerPoint.</span>
+      <span style="font-size:12px; color:var(--color-text-tertiary); margin-top:2px;">Si hay que cambiar texto, se cambia acá y se re-exporta.</span>
+    </button>
+
+    <button type="button" onclick="sendPrompt('Exportá el deck a imágenes PNG, una por slide, y dejámelas acá.')" style="cursor:pointer; text-align:left; border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:20px; background:transparent; display:flex; flex-direction:column; gap:8px;">
+      <i class="ti ti-photo" style="font-size:26px; color:var(--color-text-secondary);" aria-hidden="true"></i>
+      <span style="font-size:16px; font-weight:500; color:var(--color-text-primary);">Imágenes (PNG o JPG)</span>
+      <span style="font-size:13px; color:var(--color-text-secondary); line-height:1.5;">Una imagen de 1920×1080 por slide.</span>
+      <span style="font-size:12px; color:var(--color-text-tertiary); margin-top:2px;">Para pegar un slide suelto en un documento o un mensaje.</span>
+    </button>
+
+    <button type="button" onclick="sendPrompt('Dejame el deck como archivo HTML autocontenido.')" style="cursor:pointer; text-align:left; border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:20px; background:transparent; display:flex; flex-direction:column; gap:8px;">
+      <i class="ti ti-file-code" style="font-size:26px; color:var(--color-text-secondary);" aria-hidden="true"></i>
+      <span style="font-size:16px; font-weight:500; color:var(--color-text-primary);">HTML autocontenido</span>
+      <span style="font-size:13px; color:var(--color-text-secondary); line-height:1.5;">Un solo archivo con todo adentro: abre en cualquier navegador sin internet.</span>
+      <span style="font-size:12px; color:var(--color-text-tertiary); margin-top:2px;">Conserva animaciones y navegación.</span>
+    </button>
+
+    <button type="button" onclick="sendPrompt('Por ahora no necesito ningún formato exportado.')" style="cursor:pointer; text-align:left; border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:20px; background:transparent; display:flex; flex-direction:column; gap:8px;">
+      <i class="ti ti-check" style="font-size:26px; color:var(--color-text-tertiary);" aria-hidden="true"></i>
+      <span style="font-size:16px; font-weight:500; color:var(--color-text-primary);">Ninguno por ahora</span>
+      <span style="font-size:13px; color:var(--color-text-secondary); line-height:1.5;">La presentación queda acá y podés pedir cualquier formato más adelante.</span>
+      <span style="font-size:12px; color:var(--color-text-tertiary); margin-top:2px;">Igual guardo el original en Drive, para que el equipo lo encuentre.</span>
+    </button>
+
+    <button type="button" onclick="sendPrompt('Prefiero el prompt para Claude Design, aunque se esté discontinuando.')" style="cursor:pointer; text-align:left; border:1px dashed var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:20px; background:transparent; display:flex; flex-direction:column; gap:8px; opacity:0.66;">
+      <span style="align-self:flex-start; font-size:11px; padding:2px 8px; border-radius:999px; background:var(--color-background-warning); color:var(--color-text-warning);">En retiro</span>
+      <i class="ti ti-external-link" style="font-size:26px; color:var(--color-text-tertiary);" aria-hidden="true"></i>
+      <span style="font-size:16px; font-weight:500; color:var(--color-text-primary);">Prompt para Claude Design</span>
+      <span style="font-size:13px; color:var(--color-text-secondary); line-height:1.5;">Te doy el prompt para rehacerla allá. ProContacto está dejando de usar Claude Design, así que este camino va a desaparecer.</span>
+      <span style="font-size:12px; color:var(--color-text-tertiary); margin-top:2px;">Lo que armes allá no queda acá ni se exporta desde acá: arranca de cero.</span>
+    </button>
+
+  </div>
+</div>

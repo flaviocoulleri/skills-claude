@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<title>External Pending — Review</title>
+<style>
+  :root {
+    --primary: #0062FF;
+    --primary-600: #004ECC;
+    --secondary: #8F7AFF;
+    --bg: #0B0C0E;
+    --panel: #161719;
+    --panel-2: #1F2024;
+    --text: #F4F5F7;
+    --text-dim: #9BA0A6;
+    --border: #2A2C31;
+    --success: #34C77B;
+    --warning: #F5A623;
+    --danger: #EF4444;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); padding: 24px; }
+  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  h1 { font-size: 20px; margin: 0; font-weight: 600; }
+  .project-chip { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; }
+  section { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px; overflow: hidden; }
+  section > .section-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  section > .section-header h2 { font-size: 15px; margin: 0; font-weight: 600; }
+  .badge { background: var(--panel-2); color: var(--text-dim); padding: 2px 10px; border-radius: 10px; font-size: 12px; }
+  .badge.success { background: color-mix(in srgb, var(--success) 20%, transparent); color: var(--success); }
+  .badge.warning { background: color-mix(in srgb, var(--warning) 20%, transparent); color: var(--warning); }
+  .badge.danger  { background: color-mix(in srgb, var(--danger) 20%, transparent); color: var(--danger); }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 12px 16px; text-align: left; font-size: 13px; border-bottom: 1px solid var(--border); }
+  th { background: var(--panel-2); color: var(--text-dim); font-weight: 500; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; }
+  tr:last-child td { border-bottom: none; }
+  tr.discarded { opacity: 0.35; }
+  input[type="text"], input[type="date"], textarea {
+    background: var(--panel-2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; font-size: 13px; width: 100%; font-family: inherit;
+  }
+  input[type="text"]:focus, input[type="date"]:focus, textarea:focus { outline: none; border-color: var(--primary); }
+  textarea { resize: vertical; min-height: 60px; }
+  .toggle { position: relative; display: inline-block; width: 36px; height: 20px; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; inset: 0; background: var(--panel-2); border-radius: 20px; transition: 0.2s; cursor: pointer; }
+  .slider:before { content: ""; position: absolute; height: 16px; width: 16px; left: 2px; top: 2px; background: var(--text-dim); transition: 0.2s; border-radius: 50%; }
+  .toggle input:checked + .slider { background: var(--primary); }
+  .toggle input:checked + .slider:before { transform: translateX(16px); background: white; }
+  .actions { padding: 16px 20px; background: var(--panel-2); display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border); }
+  button { font-size: 14px; padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel-2); color: var(--text); cursor: pointer; font-weight: 500; }
+  button:hover { background: var(--panel); }
+  button.primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-600) 100%); border: none; color: white; }
+  button.primary:hover { opacity: 0.92; }
+  button.secondary { background: transparent; border-color: var(--secondary); color: var(--secondary); }
+  .empty { padding: 24px; text-align: center; color: var(--text-dim); font-size: 13px; }
+  .old-date { text-decoration: line-through; color: var(--text-dim); margin-right: 6px; font-size: 12px; }
+  .arrow { color: var(--secondary); margin: 0 4px; }
+  .source-link { color: var(--primary); font-size: 12px; text-decoration: none; }
+  .source-link:hover { text-decoration: underline; }
+  summary { cursor: pointer; font-weight: 500; padding: 4px 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Revisión de External Pendings</h1>
+  <div class="project-chip" id="project-chip">Proyecto: <span id="project-key">__PROJECT_KEY__</span></div>
+</header>
+
+<!-- ============ SECCIÓN 1: NUEVOS ============ -->
+<section>
+  <div class="section-header">
+    <h2>Pendings nuevos a crear</h2>
+    <span class="badge success" id="count-new">0</span>
+  </div>
+  <div id="new-body"></div>
+</section>
+
+<!-- ============ SECCIÓN 2: UPDATES DE FECHA ============ -->
+<section>
+  <div class="section-header">
+    <h2>Fechas a actualizar (postergaciones detectadas)</h2>
+    <span class="badge warning" id="count-updates">0</span>
+  </div>
+  <div id="updates-body"></div>
+</section>
+
+<!-- ============ SECCIÓN 3: VENCIDOS ============ -->
+<section>
+  <div class="section-header">
+    <h2>Pendings vencidos en el proyecto</h2>
+    <span class="badge danger" id="count-overdue">0</span>
+  </div>
+  <div id="overdue-body"></div>
+  <div class="actions" id="overdue-actions" style="display:none;">
+    <button class="secondary" id="btn-draft-email">Redactar draft de follow-up al cliente</button>
+  </div>
+</section>
+
+<!-- ============ ACCIONES FINALES ============ -->
+<div class="actions" style="background: transparent; border: none; margin-top: 8px;">
+  <button id="btn-cancel">Cancelar</button>
+  <button class="primary" id="btn-confirm">Confirmar y ejecutar en Jira</button>
+</div>
+
+<script>
+  // Placeholders reemplazados por el skill al generar el artifact.
+  // Estructura esperada:
+  //   { new: [...], updates: [...], overdue: [...] }
+  // Cada pending en `new`: { titulo, descripcion, dueno_cliente, fecha_compromiso, fuente_url, fuente_tipo }
+  // Cada en `updates`: { issueKey, summary, old_duedate, new_duedate, fuente_url }
+  // Cada en `overdue`: { issueKey, summary, duedate, dueno_cliente, dias_atraso }
+  const DATA = __PENDINGS_DATA__;
+
+  const state = {
+    new: DATA.new.map((p, i) => ({ ...p, id: 'n' + i, included: true })),
+    updates: DATA.updates.map((u, i) => ({ ...u, id: 'u' + i, included: true })),
+    overdue: DATA.overdue.map((o, i) => ({ ...o, id: 'o' + i, selectedForFollowup: false })),
+  };
+
+  function renderNew() {
+    const body = document.getElementById('new-body');
+    if (state.new.length === 0) {
+      body.innerHTML = '<div class="empty">No se detectaron pendings nuevos.</div>';
+      updateCount('count-new', 0);
+      return;
+    }
+    let html = '<table><thead><tr>'
+      + '<th style="width:50px;">Incluir</th>'
+      + '<th>Título</th>'
+      + '<th>Descripción</th>'
+      + '<th style="width:160px;">Dueño cliente</th>'
+      + '<th style="width:140px;">Fecha compromiso</th>'
+      + '<th style="width:90px;">Fuente</th>'
+      + '</tr></thead><tbody>';
+    state.new.forEach(p => {
+      html += `<tr id="row-${p.id}" class="${p.included ? '' : 'discarded'}">
+        <td><label class="toggle"><input type="checkbox" ${p.included ? 'checked' : ''} onchange="toggleNew('${p.id}')"><span class="slider"></span></label></td>
+        <td><input type="text" value="${escapeAttr(p.titulo)}" onchange="updateField('new','${p.id}','titulo',this.value)"></td>
+        <td><textarea onchange="updateField('new','${p.id}','descripcion',this.value)">${escapeHtml(p.descripcion || '')}</textarea></td>
+        <td><input type="text" value="${escapeAttr(p.dueno_cliente || '')}" onchange="updateField('new','${p.id}','dueno_cliente',this.value)"></td>
+        <td><input type="date" value="${p.fecha_compromiso || ''}" onchange="updateField('new','${p.id}','fecha_compromiso',this.value)"></td>
+        <td>${p.fuente_url ? `<a class="source-link" href="${p.fuente_url}" target="_blank">${p.fuente_tipo}</a>` : '—'}</td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+    body.innerHTML = html;
+    updateCount('count-new', state.new.filter(p => p.included).length);
+  }
+
+  function renderUpdates() {
+    const body = document.getElementById('updates-body');
+    if (state.updates.length === 0) {
+      body.innerHTML = '<div class="empty">No se detectaron postergaciones.</div>';
+      updateCount('count-updates', 0);
+      return;
+    }
+    let html = '<table><thead><tr>'
+      + '<th style="width:50px;">Incluir</th>'
+      + '<th style="width:120px;">Issue</th>'
+      + '<th>Título</th>'
+      + '<th style="width:220px;">Cambio de fecha</th>'
+      + '<th style="width:90px;">Fuente</th>'
+      + '</tr></thead><tbody>';
+    state.updates.forEach(u => {
+      html += `<tr id="row-${u.id}" class="${u.included ? '' : 'discarded'}">
+        <td><label class="toggle"><input type="checkbox" ${u.included ? 'checked' : ''} onchange="toggleUpdate('${u.id}')"><span class="slider"></span></label></td>
+        <td><strong>${u.issueKey}</strong></td>
+        <td>${escapeHtml(u.summary)}</td>
+        <td><span class="old-date">${u.old_duedate || '(sin fecha)'}</span><span class="arrow">→</span><input type="date" value="${u.new_duedate}" onchange="updateField('updates','${u.id}','new_duedate',this.value)" style="width:140px;"></td>
+        <td>${u.fuente_url ? `<a class="source-link" href="${u.fuente_url}" target="_blank">link</a>` : '—'}</td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+    body.innerHTML = html;
+    updateCount('count-updates', state.updates.filter(u => u.included).length);
+  }
+
+  function renderOverdue() {
+    const body = document.getElementById('overdue-body');
+    const actions = document.getElementById('overdue-actions');
+    if (state.overdue.length === 0) {
+      body.innerHTML = '<div class="empty">No hay pendings vencidos. Buen trabajo.</div>';
+      actions.style.display = 'none';
+      updateCount('count-overdue', 0);
+      return;
+    }
+    let html = '<table><thead><tr>'
+      + '<th style="width:50px;">Follow-up</th>'
+      + '<th style="width:120px;">Issue</th>'
+      + '<th>Título</th>'
+      + '<th style="width:160px;">Dueño cliente</th>'
+      + '<th style="width:140px;">Fecha original</th>'
+      + '<th style="width:100px;">Atraso</th>'
+      + '</tr></thead><tbody>';
+    state.overdue.forEach(o => {
+      html += `<tr>
+        <td><label class="toggle"><input type="checkbox" ${o.selectedForFollowup ? 'checked' : ''} onchange="toggleOverdue('${o.id}')"><span class="slider"></span></label></td>
+        <td><strong>${o.issueKey}</strong></td>
+        <td>${escapeHtml(o.summary)}</td>
+        <td>${escapeHtml(o.dueno_cliente || '—')}</td>
+        <td>${o.duedate || '—'}</td>
+        <td><span class="badge danger">${o.dias_atraso} días</span></td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+    body.innerHTML = html;
+    actions.style.display = 'flex';
+    updateCount('count-overdue', state.overdue.length);
+  }
+
+  function toggleNew(id) {
+    const p = state.new.find(x => x.id === id);
+    p.included = !p.included;
+    renderNew();
+  }
+  function toggleUpdate(id) {
+    const u = state.updates.find(x => x.id === id);
+    u.included = !u.included;
+    renderUpdates();
+  }
+  function toggleOverdue(id) {
+    const o = state.overdue.find(x => x.id === id);
+    o.selectedForFollowup = !o.selectedForFollowup;
+  }
+  function updateField(section, id, field, value) {
+    const item = state[section].find(x => x.id === id);
+    if (item) item[field] = value;
+  }
+  function updateCount(elId, n) {
+    document.getElementById(elId).textContent = n;
+  }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  }
+  function escapeAttr(s) { return escapeHtml(s); }
+
+  document.getElementById('btn-confirm').onclick = () => {
+    const payload = {
+      action: 'confirm',
+      project: document.getElementById('project-key').textContent,
+      new: state.new.filter(p => p.included),
+      updates: state.updates.filter(u => u.included),
+      followup_overdue: state.overdue.filter(o => o.selectedForFollowup),
+    };
+    // El callback depende de la API de Cowork artifacts.
+    if (window.cowork && window.cowork.sendMessage) {
+      window.cowork.sendMessage('Ejecutar: ' + JSON.stringify(payload));
+    } else {
+      console.log('PAYLOAD DE CONFIRMACIÓN:', payload);
+      alert('Confirmación enviada. Ver consola para payload.');
+    }
+  };
+
+  document.getElementById('btn-cancel').onclick = () => {
+    if (window.cowork && window.cowork.sendMessage) {
+      window.cowork.sendMessage('Cancelar operación de pc-delivery-jira-pending-tracker.');
+    }
+  };
+
+  document.getElementById('btn-draft-email').onclick = () => {
+    const selected = state.overdue.filter(o => o.selectedForFollowup);
+    if (selected.length === 0) {
+      alert('Selecciona al menos un pending vencido para incluir en el follow-up.');
+      return;
+    }
+    if (window.cowork && window.cowork.sendMessage) {
+      window.cowork.sendMessage('Redactar draft de follow-up para: ' + JSON.stringify(selected.map(o => o.issueKey)));
+    }
+  };
+
+  // Render inicial
+  renderNew();
+  renderUpdates();
+  renderOverdue();
+</script>
+
+</body>
+</html>

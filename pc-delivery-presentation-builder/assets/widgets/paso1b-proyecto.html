@@ -1,0 +1,33 @@
+<!-- Paso 1B — datos del proyecto (Patrón B, form). Slots {{...}} = prellenado desde Salesforce
+     (Project__c.Name, Account.Name, Account.Website) si están disponibles. Si no hay dato, dejar
+     value="" (queda el placeholder). En los <select>, marca selected la opción que corresponda.
+     El botón Continuar recoge los campos y los envía con sendPrompt. -->
+<h2 class="sr-only">Paso 1B: formulario con los datos del proyecto para la presentación de delivery</h2>
+<div style="padding:0.5rem 0; font-family:var(--font-sans);">
+  <div style="font-size:12px; color:var(--color-text-tertiary); margin-bottom:6px;">Paso 2 de 5 · Delivery</div>
+  <div style="font-size:16px; font-weight:500; color:var(--color-text-primary); margin-bottom:14px;">Necesito el contexto del proyecto para personalizar el prompt. ¿Me pasas estos datos?</div>
+
+  <div style="border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:18px; display:flex; flex-direction:column; gap:14px;">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px;">
+      <label style="display:flex; flex-direction:column; gap:5px;"><span style="font-size:14px; font-weight:500; color:var(--color-text-primary);">Proyecto <span style="color:var(--color-text-danger);">*</span></span><input id="pb-proyecto" type="text" value="{{PROYECTO}}" placeholder="Nombre del proyecto (idealmente el Name del Project__c)" style="font-size:14px; padding:8px 10px; border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-md); background:transparent; color:var(--color-text-primary);"></label>
+      <label style="display:flex; flex-direction:column; gap:5px;"><span style="font-size:14px; font-weight:500; color:var(--color-text-primary);">Cliente <span style="color:var(--color-text-danger);">*</span></span><input id="pb-cliente" type="text" value="{{CLIENTE}}" placeholder="Account asociada al proyecto" style="font-size:14px; padding:8px 10px; border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-md); background:transparent; color:var(--color-text-primary);"></label>
+      <label style="display:flex; flex-direction:column; gap:5px;"><span style="font-size:14px; font-weight:500; color:var(--color-text-primary);">Audiencia del deck <span style="color:var(--color-text-danger);">*</span></span><input id="pb-audiencia" type="text" placeholder="Ej: sponsor del cliente, equipo, comité interno, retro" style="font-size:14px; padding:8px 10px; border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-md); background:transparent; color:var(--color-text-primary);"></label>
+      <label style="display:flex; flex-direction:column; gap:5px;"><span style="font-size:14px; font-weight:500; color:var(--color-text-primary);">Hito del proyecto <span style="color:var(--color-text-danger);">*</span></span><select id="pb-hito" style="font-size:14px; padding:8px 10px; border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-md); background:transparent; color:var(--color-text-primary);"><option>Kickoff</option><option>Sprint review</option><option>Steering</option><option>Status</option><option>Mid-project</option><option>Cierre / Aceptación</option><option>Retro</option><option>Otro</option></select></label>
+      <label style="display:flex; flex-direction:column; gap:5px;"><span style="font-size:14px; font-weight:500; color:var(--color-text-primary);">PM / SM responsable</span><input id="pb-pm" type="text" value="{{PM}}" placeholder="Autocompletado con el usuario actual" style="font-size:14px; padding:8px 10px; border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-md); background:transparent; color:var(--color-text-primary);"></label>
+      <label style="display:flex; flex-direction:column; gap:5px;"><span style="font-size:14px; font-weight:500; color:var(--color-text-primary);">Período cubierto</span><input id="pb-periodo" type="text" placeholder="Ej: últimos 30 días, Sprint 4" style="font-size:14px; padding:8px 10px; border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-md); background:transparent; color:var(--color-text-primary);"><span style="font-size:12px; color:var(--color-text-tertiary);">Útil para status/steering; déjalo vacío si no aplica.</span></label>
+      <label style="display:flex; flex-direction:column; gap:5px;"><span style="font-size:14px; font-weight:500; color:var(--color-text-primary);">Idioma del deck <span style="color:var(--color-text-danger);">*</span></span><select id="pb-idioma" style="font-size:14px; padding:8px 10px; border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-md); background:transparent; color:var(--color-text-primary);"><option>Español</option><option>Inglés</option></select></label>
+    </div>
+    <label style="display:flex; flex-direction:column; gap:5px;"><span style="font-size:14px; font-weight:500; color:var(--color-text-primary);">Web del cliente <span style="font-size:12px; font-weight:400; color:var(--color-text-tertiary);">— recomendado</span></span><input id="pb-web" type="url" value="{{WEB}}" placeholder="https://www.ejemplo.com" style="font-size:14px; padding:8px 10px; border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-md); background:transparent; color:var(--color-text-primary);"><span style="font-size:12px; color:var(--color-text-tertiary);">Si la pasas, leo la home y un par de páginas clave para sumar señales del cliente.</span></label>
+    <div style="display:flex; justify-content:flex-end;"><button type="button" id="pb-continuar" style="cursor:pointer; font-size:14px; font-weight:500; padding:9px 18px; border-radius:var(--border-radius-md); border:1px solid var(--color-border-info); background:var(--color-background-info); color:var(--color-text-info);">Continuar</button></div>
+  </div>
+</div>
+<script>
+(function(){
+  var b=document.getElementById('pb-continuar'); if(!b) return;
+  b.addEventListener('click',function(){
+    function v(id){var e=document.getElementById(id);return e?e.value.trim():'';}
+    var f=[['Proyecto',v('pb-proyecto')],['Cliente',v('pb-cliente')],['Audiencia',v('pb-audiencia')],['Hito',v('pb-hito')],['PM/SM',v('pb-pm')],['Período',v('pb-periodo')],['Idioma',v('pb-idioma')],['Web',v('pb-web')]].filter(function(x){return x[1];});
+    sendPrompt('Datos del proyecto — '+f.map(function(x){return x[0]+': '+x[1];}).join(' · '));
+  });
+})();
+</script>

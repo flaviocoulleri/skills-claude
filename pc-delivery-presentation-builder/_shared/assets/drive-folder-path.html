@@ -1,0 +1,38 @@
+<!--
+TEMPLATE del widget de confirmación de carpeta destino (Paso 4.8). NO regenerar el layout:
+el skill sólo reemplaza los slots y pasa el resultado a mcp__visualize__show_widget.
+Quita este comentario al instanciar.
+
+Slots:
+  {{AREA_LABEL}}      → "Comercial" o "Delivery"
+  {{FILAS_NIVELES}}   → una fila por nivel de la ruta (modelos abajo), en orden
+  {{SENDPROMPT_CREAR}}→ instrucción de creación, ej:
+                        Crea las carpetas que falten en la ruta A - Comercial › A - Oportunidades › Argentina › «{Opp}» y usa esa carpeta como destino de la presentación.
+
+Filas modelo (indent = padding-left por nivel: 10, 30, 50px; el último nivel "se creará" usa margin-left:70px):
+
+  NIVEL QUE EXISTE (sin link):
+  <div style="display:flex;align-items:center;gap:10px;padding:8px 10px 8px 30px;"><i class="ti ti-folder" style="font-size:18px;color:var(--color-text-tertiary);" aria-hidden="true"></i><span style="flex:1;font-size:14px;color:var(--color-text-secondary);">A - Oportunidades</span><span style="font-size:11px;color:var(--color-text-tertiary);"><i class="ti ti-check" aria-hidden="true"></i> existe</span></div>
+
+  NIVEL QUE EXISTE (con link "ver"):
+  <div style="display:flex;align-items:center;gap:10px;padding:8px 10px 8px 50px;"><i class="ti ti-folder" style="font-size:18px;color:var(--color-text-tertiary);" aria-hidden="true"></i><span style="flex:1;font-size:14px;color:var(--color-text-primary);">Argentina</span><a href="{{URL}}" style="font-size:11px;text-decoration:none;color:var(--color-text-secondary);display:inline-flex;align-items:center;gap:4px;"><i class="ti ti-external-link" aria-hidden="true"></i> ver</a><span style="font-size:11px;color:var(--color-text-tertiary);"><i class="ti ti-check" aria-hidden="true"></i> existe</span></div>
+
+  NIVEL QUE SE CREARÁ (resaltado, usar para cada nivel faltante; incrementa margin-left por profundidad):
+  <div style="display:flex;align-items:center;gap:10px;padding:10px;margin-left:70px;background:var(--color-background-info);border-radius:var(--border-radius-md);"><i class="ti ti-folder-plus" style="font-size:18px;color:var(--color-text-info);" aria-hidden="true"></i><span style="flex:1;font-size:14px;font-weight:500;color:var(--color-text-info);">{{NOMBRE}}</span><span style="font-size:11px;color:var(--color-text-info);"><i class="ti ti-plus" aria-hidden="true"></i> se creará</span></div>
+-->
+<h2 class="sr-only">Confirmación de la ruta de carpetas de Drive donde Claude Design guardará la presentación</h2>
+<div style="padding:0.5rem 0; font-family:var(--font-sans);">
+  <div style="font-size:12px; color:var(--color-text-tertiary); margin-bottom:6px;">Destino de la presentación · {{AREA_LABEL}}</div>
+  <div style="font-size:18px; font-weight:500; color:var(--color-text-primary); margin-bottom:4px;">¿Guardo acá la presentación?</div>
+  <div style="font-size:14px; color:var(--color-text-secondary); line-height:1.6; margin-bottom:16px;">Esta es la ruta según la convención de Drive. Creo las carpetas que falten y Claude Design sube ahí el HTML del deck.</div>
+
+  <div style="border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:6px; margin-bottom:16px;">
+    {{FILAS_NIVELES}}
+  </div>
+
+  <div style="display:flex; flex-wrap:wrap; gap:8px;">
+    <button type="button" onclick="sendPrompt('{{SENDPROMPT_CREAR}}')" style="cursor:pointer; font-size:13px; font-weight:500; padding:9px 16px; border-radius:var(--border-radius-md); border:1px solid var(--color-border-info); background:var(--color-background-info); color:var(--color-text-info); display:inline-flex; align-items:center; gap:6px;"><i class="ti ti-check" aria-hidden="true"></i> Crear y usar esta carpeta</button>
+    <button type="button" onclick="sendPrompt('Quiero cambiar el país o la ubicación de la carpeta destino de la presentación.')" style="cursor:pointer; font-size:13px; padding:9px 16px; border-radius:var(--border-radius-md); border:1px solid var(--color-border-secondary); background:transparent; color:var(--color-text-primary); display:inline-flex; align-items:center; gap:6px;"><i class="ti ti-folder-search" aria-hidden="true"></i> Cambiar ubicación</button>
+    <button type="button" onclick="sendPrompt('No subas la presentación a Drive — omití la sección de destino del prompt.')" style="cursor:pointer; font-size:13px; padding:9px 16px; border-radius:var(--border-radius-md); border:1px solid var(--color-border-tertiary); background:transparent; color:var(--color-text-secondary); display:inline-flex; align-items:center; gap:6px;"><i class="ti ti-cloud-off" aria-hidden="true"></i> No subir a Drive</button>
+  </div>
+</div>

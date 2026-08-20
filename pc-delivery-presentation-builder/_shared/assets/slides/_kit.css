@@ -1,0 +1,172 @@
+/* =========================================================================
+   ProContacto — Slide Kit
+   Capa de slides sobre el Design System oficial (Manual de Marca 2026).
+   Tokens sincronizados de `colors_and_type.css` del DS (export 2026-06-15).
+   Si el DS cambia, re-sincronizar el bloque :root + clases base de abajo.
+
+   Uso: el skill embebe este CSS UNA vez en el prompt + el markup de los
+   slides estandarizados. Claude Design clona el markup y rellena los slots.
+   ========================================================================= */
+
+/* Open Sans — el DS lo self-hostea (fonts/*.ttf). Acá usamos Google Fonts
+   para que el deck funcione en Claude Design sin depender de los .ttf.
+   La firma de marca es el contraste ExtraBold(800) / Light(300). */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+:root {
+  /* ───────── BRAND — Blue (Figma) ───────── */
+  --pc-blue-100:#CCE7FF; --pc-blue-200:#99CCFF; --pc-blue-300:#66ACFF;
+  --pc-blue-400:#3F90FF; --pc-blue-500:#0062FF; --pc-blue-600:#004BDB;
+  --pc-blue-700:#0032A3; --pc-blue-800:#001B66; --pc-blue-900:#000B33;
+  --pc-blue-deep:#004BDB;
+
+  /* ───────── BRAND — Violet (Figma) ───────── */
+  --pc-violet-100:#EAE4FF; --pc-violet-200:#D4C9FF; --pc-violet-300:#BEAFFF;
+  --pc-violet-400:#AC9BFF; --pc-violet-500:#8F7AFF; --pc-violet-600:#6B59DB;
+  --pc-violet-700:#4C3DB7; --pc-violet-800:#322693; --pc-violet-900:#20177A;
+
+  /* Signature gradient + glows */
+  --pc-gradient: linear-gradient(180deg, #0062FF 0%, #8F7AFF 100%);
+  --pc-gradient-radial: radial-gradient(ellipse at 50% 100%, #0062FF 0%, #1a1280 35%, #0B0C0E 70%, #000000 100%);
+  --pc-gradient-glow: radial-gradient(ellipse 80% 50% at 50% 100%, rgba(0,98,255,0.55) 0%, rgba(143,122,255,0.25) 35%, rgba(11,12,14,0) 70%);
+
+  /* Status */
+  --pc-success-100:#C1E7D5; --pc-success-500:#009060;
+  --pc-info-100:#99CCFF;    --pc-info-500:#0070DD;
+  --pc-error-100:#FBCCD7;   --pc-error-500:#D21E41;
+  --pc-warning-100:#FDCCB9; --pc-warning-500:#DF4D03;
+
+  /* Surfaces */
+  --pc-bg-deepest:#000000; --pc-bg-canvas:#0B0C0E; --pc-bg-elev-1:#1A1B1E;
+  --pc-bg-elev-2:#1F1F1F;  --pc-bg-elev-3:#1F1F1F; --pc-bg-elev-4:#333333;
+
+  /* Neutrals */
+  --pc-neutral-0:#FFFFFF;  --pc-neutral-100:#F2F2F2; --pc-neutral-200:#D9D9D9;
+  --pc-neutral-300:#BFBFBF;--pc-neutral-700:#4D4D4D; --pc-neutral-850:#1F1F1F;
+  --pc-neutral-1000:#000000;
+
+  /* ───────── SEMANTIC ───────── */
+  --bg:var(--pc-bg-canvas); --bg-elevated:var(--pc-bg-elev-3);
+  --surface:var(--pc-bg-elev-2); --surface-2:var(--pc-bg-elev-3);
+  --border:rgba(255,255,255,0.10); --border-strong:rgba(255,255,255,0.18);
+  --fg:#FFFFFF; --fg-1:rgba(255,255,255,0.96); --fg-2:rgba(255,255,255,0.72);
+  --fg-3:rgba(255,255,255,0.52); --fg-4:rgba(255,255,255,0.34);
+  --fg-on-blue:#FFFFFF; --fg-on-light:#0A0A19;
+  --accent:var(--pc-blue-500); --accent-2:var(--pc-violet-500);
+  --link:var(--pc-blue-300); --link-hover:var(--pc-blue-200);
+  --success:var(--pc-success-500); --info:var(--pc-info-500);
+  --warning:var(--pc-warning-500); --danger:var(--pc-error-500);
+
+  /* ───────── TYPE ───────── */
+  --font-sans:'Open Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display:'Open Sans', system-ui, sans-serif;
+  --w-light:300; --w-regular:400; --w-medium:500; --w-semibold:600; --w-bold:700; --w-extrabold:800;
+  --lh-tight:1.05; --lh-snug:1.18; --lh-normal:1.45; --lh-relaxed:1.6;
+  --ls-tight:-0.02em; --ls-snug:-0.01em; --ls-normal:0; --ls-wide:0.04em; --ls-overline:0.12em;
+
+  /* ───────── SPACING / RADII / SHADOW / MOTION ───────── */
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px;
+  --s-7:48px; --s-8:64px; --s-9:96px; --s-10:128px;
+  --r-xs:4px; --r-sm:6px; --r-md:10px; --r-lg:16px; --r-xl:24px; --r-2xl:32px; --r-pill:9999px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,0.45); --shadow-md:0 8px 24px rgba(0,0,0,0.45);
+  --shadow-lg:0 24px 64px rgba(0,0,0,0.55);
+  --shadow-glow-blue:0 0 0 1px rgba(0,98,255,0.4), 0 8px 32px rgba(0,98,255,0.35);
+  --ease-out:cubic-bezier(.2,.8,.2,1); --dur-base:220ms;
+}
+
+/* =========================================================================
+   SLIDE LAYER — contenedor 16:9 y componentes de slide
+   Tipografía interna en `cqw` (container query units): cada slide escala
+   con su propio ancho, no con el viewport → se ve igual a cualquier tamaño.
+   ========================================================================= */
+
+.pc-deck { display:flex; flex-direction:column; gap:24px; background:#000; padding:24px; }
+
+.pc-slide {
+  container-type: inline-size;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--fg-1);
+  font-family: var(--font-sans);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 7cqw 8cqw;
+}
+.pc-slide * { box-sizing: border-box; }
+
+/* Glow azul-violeta desde abajo (firma de portada/cierre) */
+.pc-slide__glow {
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background: var(--pc-gradient-glow);
+}
+.pc-slide > * { position: relative; z-index: 1; }
+
+/* Texto */
+.pc-slide__kicker {
+  font-size: 1.5cqw; font-weight: var(--w-bold); text-transform: uppercase;
+  letter-spacing: var(--ls-overline); color: var(--pc-blue-300);
+}
+.pc-slide__title {
+  font-family: var(--font-display); font-weight: var(--w-extrabold);
+  font-size: clamp(28px, 7cqw, 96px); line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight); margin: 0;
+}
+.pc-slide__title--md { font-size: clamp(24px, 5cqw, 64px); }
+.pc-slide__subtitle {
+  font-family: var(--font-display); font-weight: var(--w-light);
+  font-size: clamp(15px, 3cqw, 36px); line-height: var(--lh-snug);
+  letter-spacing: var(--ls-snug); color: var(--fg-2); margin: 0;
+}
+.pc-slide__body { font-size: clamp(13px, 1.9cqw, 20px); line-height: var(--lh-relaxed); color: var(--fg-2); }
+
+/* Marca: lockup logo + texto contextual con divisor vertical (portada/cierre) */
+.pc-slide__brand { display: flex; align-items: center; gap: 2.2cqw; }
+.pc-slide__brand svg { height: 3.4cqw; width: auto; display: block; }
+.pc-slide__brand-divider { width: 1px; height: 3.2cqw; background: var(--border-strong); }
+.pc-slide__brand-context { font-size: 1.4cqw; font-weight: var(--w-regular); color: var(--fg-3); line-height: 1.3; }
+
+/* Footer del slide (fecha / confidencial / paginación) */
+.pc-slide__footer {
+  margin-top: auto; display: flex; align-items: center; justify-content: space-between;
+  font-size: 1.25cqw; color: var(--fg-4); padding-top: 3cqw;
+}
+.pc-slide__footer svg { height: 2.2cqw; width: auto; opacity: .8; }
+
+/* Centrado vertical de contenido principal */
+.pc-slide__center { margin: auto 0; display: flex; flex-direction: column; gap: 2.4cqw; }
+
+/* ───────── Variante: Divisor de sección (full-bleed azul) ───────── */
+.pc-slide--divider { background: var(--pc-blue-500); color: #fff; justify-content: center; }
+.pc-slide--divider .pc-slide__kicker { color: rgba(255,255,255,0.75); }
+.pc-slide--divider .pc-slide__num {
+  font-size: clamp(40px, 12cqw, 180px); font-weight: var(--w-extrabold);
+  line-height: 1; color: rgba(255,255,255,0.22); margin: 0;
+}
+.pc-slide--divider .pc-slide__title { color: #fff; max-width: 80%; }
+
+/* ───────── Cierre: lista de próximos pasos + slogan de remate ───────── */
+.pc-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1.6cqw; }
+.pc-steps li { display: flex; align-items: baseline; gap: 1.8cqw; font-size: clamp(14px, 2.2cqw, 24px); color: var(--fg-1); }
+.pc-steps li::before {
+  content: counter(step); counter-increment: step;
+  font-weight: var(--w-extrabold); font-size: clamp(16px, 2.6cqw, 30px);
+  background: var(--pc-gradient); -webkit-background-clip: text; background-clip: text; color: transparent;
+  min-width: 2.2cqw;
+}
+.pc-steps { counter-reset: step; }
+.pc-slogan {
+  font-family: var(--font-display); font-weight: var(--w-extrabold);
+  font-size: clamp(22px, 5cqw, 64px); line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+  background: var(--pc-gradient); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+/* ───────── Base typography helpers (del DS, por si se usan sueltos) ───────── */
+.pc-overline { font-size: var(--t-overline,11px); text-transform: uppercase; letter-spacing: var(--ls-overline); font-weight: var(--w-bold); color: var(--fg-3); }
+.pc-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: var(--s-5); }
