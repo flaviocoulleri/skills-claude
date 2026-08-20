@@ -1,0 +1,33 @@
+<!-- Compartir el entregable (Patrón A). Canónico en _shared/artifact-publish/.
+     Se muestra DESPUÉS de publicar en el gestor — el export exige artefacto publicado.
+     Slots: {{URL_ARTEFACTO}} {{TIPO}} -->
+<h2 class="sr-only">Elegir cómo compartir el entregable: por link del gestor de artefactos, o generando un archivo PDF, PowerPoint o imágenes</h2>
+<div style="padding:0.5rem 0; font-family:var(--font-sans);">
+  <div style="font-size:18px; font-weight:500; color:var(--color-text-primary); margin-bottom:6px;">¿Cómo lo compartís?</div>
+  <div style="font-size:13px; color:var(--color-text-secondary); line-height:1.5; margin-bottom:16px;">Ya está publicado y tiene su link propio. Si más adelante corregís algo, el link sigue siendo el mismo y muestra la versión nueva — no hay que reenviar nada.</div>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:16px;">
+
+    <button type="button" onclick="sendPrompt('Pasame el link para compartir el entregable.')" style="cursor:pointer; text-align:left; border:1px solid var(--color-border-info); border-radius:var(--border-radius-lg); padding:20px; background:transparent; display:flex; flex-direction:column; gap:8px;">
+      <span style="align-self:flex-start; font-size:11px; padding:2px 8px; border-radius:999px; background:var(--color-background-info); color:var(--color-text-info);">Recomendado</span>
+      <i class="ti ti-link" style="font-size:26px; color:var(--color-text-secondary);" aria-hidden="true"></i>
+      <span style="font-size:16px; font-weight:500; color:var(--color-text-primary);">Compartir el link</span>
+      <span style="font-size:13px; color:var(--color-text-secondary); line-height:1.5;">Quien lo abra ve siempre la última versión. Si corregimos un número, no hay que reenviar nada ni avisar.</span>
+      <span style="font-size:12px; color:var(--color-text-tertiary); margin-top:2px;">Dentro de ProContacto se abre con la cuenta de Google.</span>
+    </button>
+
+    <button type="button" onclick="sendPrompt('Ajustá el entregable antes de compartirlo.')" style="cursor:pointer; text-align:left; border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:20px; background:transparent; display:flex; flex-direction:column; gap:8px;">
+      <i class="ti ti-edit" style="font-size:26px; color:var(--color-text-secondary);" aria-hidden="true"></i>
+      <span style="font-size:16px; font-weight:500; color:var(--color-text-primary);">Ajustar antes</span>
+      <span style="font-size:13px; color:var(--color-text-secondary); line-height:1.5;">Decime qué cambiar y publico una versión nueva sobre el mismo link.</span>
+    </button>
+
+    <button type="button" onclick="sendPrompt('Necesito el archivo igual: generá el PDF.')" style="cursor:pointer; text-align:left; border:1px dashed var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:20px; background:transparent; display:flex; flex-direction:column; gap:8px; opacity:0.82;">
+      <i class="ti ti-file-type-pdf" style="font-size:26px; color:var(--color-text-tertiary);" aria-hidden="true"></i>
+      <span style="font-size:16px; font-weight:500; color:var(--color-text-primary);">Necesito el archivo</span>
+      <span style="font-size:13px; color:var(--color-text-secondary); line-height:1.5;">PDF, PowerPoint o imágenes. Se genera del mismo original, así que se ve igual.</span>
+      <span style="font-size:12px; color:var(--color-text-tertiary); margin-top:2px;">Ojo: el archivo queda congelado en esta versión. Si algo cambia, hay que volver a mandarlo.</span>
+    </button>
+
+  </div>
+</div>

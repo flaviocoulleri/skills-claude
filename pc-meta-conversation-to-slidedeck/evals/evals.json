@@ -1,0 +1,23 @@
+{
+  "skill_name": "pc-meta-conversation-to-slidedeck",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Estuvimos discutiendo durante esta conversación si migrar nuestra base de datos de MySQL a PostgreSQL. Los puntos clave fueron: el equipo técnico identificó problemas de rendimiento en queries complejas con MySQL, PostgreSQL ofrece mejor soporte para JSON y full-text search, el costo de migración estimado es 3 meses de trabajo de 2 desarrolladores, el riesgo principal es el downtime durante la migración (se puede mitigar con replicación en paralelo), y la decisión final fue proceder con la migración en Q3 2026. Convertí esta conversación en slides para presentarla al CTO.",
+      "expected_output": "El skill debe: (1) mostrar un widget con tema detectado = migración MySQL→PostgreSQL, audiencia pre-seleccionada = Ejecutivos/CTO, propósito = Informar/Proponer; (2) generar un prompt que incluya todos los puntos clave (rendimiento, JSON/full-text, costo 3 meses, riesgo downtime, decisión Q3), con estructura de slides coherente: contexto → problema → solución → beneficios → riesgos/mitigación → plan → próximos pasos.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Hicimos un análisis de las ventas del Q1 2026. Los resultados: cerramos 23 deals por $4.2M USD, superamos el target de $3.8M un 10.5%, el producto más vendido fue Sales Cloud con 14 implementaciones, el segmento retail fue el que más creció (+40% vs Q1 2025), tuvimos 3 deals perdidos en banca por precio, el ciclo promedio de venta fue 67 días (meta: 60 días), y el equipo de 8 AEs tuvo un NPS de clientes de 72. Quiero presentar estos resultados al board la semana que viene.",
+      "expected_output": "El skill debe: (1) mostrar widget con tema = resultados Q1 2026, audiencia pre-seleccionada = Ejecutivos/Board, propósito = Reportar avance, slides 10-15; (2) generar prompt que preserve TODOS los datos específicos ($4.2M, 23 deals, 10.5% sobre target, 14 Sales Cloud, +40% retail, 3 perdidos en banca, 67 días ciclo, NPS 72, equipo 8 AEs), con estructura que muestre headline → breakdown por producto → segmentos → ciclo de venta → deals perdidos → NPS → outlook Q2.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Charlamos sobre cómo implementar un sistema de onboarding para nuevos empleados en ProContacto. Los puntos que surgieron: actualmente el onboarding toma 3 semanas y es informal (sin proceso documentado), la propuesta es crear una plataforma e-learning interna (PC Academy), el plan técnico es usar Firebase + GitHub Copilot para el contenido, los módulos propuestos son: cultura ProContacto, herramientas internas (Salesforce, Jira, Slack), procesos de delivery, y proceso comercial, el timeline es 8 semanas de desarrollo + 2 semanas de prueba piloto con 5 personas, y el costo estimado es $0 en infraestructura (Firebase free tier) + 160hs de desarrollo. Ármame una presentación para convencer al CEO de que apruebe el proyecto.",
+      "expected_output": "El skill debe: (1) detectar que es una propuesta de proyecto interno, widget con audiencia = Ejecutivos/CEO, propósito = Proponer o vender, tono = Formal; (2) generar prompt con estructura tipo business case: problema actual (3 semanas, informal) → solución propuesta (PC Academy, Firebase+GitHub Copilot) → módulos y contenido → plan de implementación (8+2 semanas) → recursos necesarios (160hs, $0 infra) → ROI/beneficios esperados → próximos pasos para aprobación.",
+      "files": []
+    }
+  ]
+}

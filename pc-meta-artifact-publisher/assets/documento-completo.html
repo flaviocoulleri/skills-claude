@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITULO__</title>
+<!-- __TRACE__ -->
+<!-- =========================================================================
+     ProContacto — Envoltorio para publicar en el gestor de artefactos.
+
+     Qué es: el mínimo indispensable para que un FRAGMENTO de HTML armado en una
+     conversación (el caso ad-hoc, sin skill productor) se pueda publicar como
+     documento completo. NO es un shell de entregable: no impone portada, ni
+     índice, ni layout. Si el entregable es un deck / documento / wireframe con
+     forma propia, el shell correcto es el de su motor (_shared/deck-engine,
+     doc-engine, wireframe-engine) y este archivo no se usa.
+
+     Tokens a reemplazar (tres; el comentario los nombra sin guiones bajos para
+     que un reemplazo de texto no se coma esta línea):
+       TITULO  → el título canónico: {Cliente} · {Entregable} · {Tipo}
+       TRACE   → comentario oculto de trazabilidad, incluido `gestor-id: {id}`
+                 una vez publicado (ver _shared/artifact-publish/)
+       CUERPO  → el fragmento tal cual vino, con su propio <style> si lo trae
+
+     Por qué la fuente va por <link> y no embebida: el gestor NO tiene CSP
+     (verificado 4-ago-2026), así que Google Fonts carga sin problema y el
+     entregable pesa ~110 KB menos. La versión con la fuente embebida se reserva
+     para la copia offline de Drive.
+     ========================================================================= -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<style>
+/* -------------------------------------------------------------------------
+   1 · Tokens de marca ProContacto.
+   ------------------------------------------------------------------------- */
+:root{
+  --pc-blue:#0062FF; --pc-blue-700:#0032A3; --pc-violet:#8F7AFF;
+  --pc-ink:#0B0C0E; --pc-paper:#FFFFFF; --pc-paper-2:#F7F8FA;
+  --pc-rule:#E3E6EA; --pc-rule-strong:#C9CED6;
+  --pc-fg:#14161A; --pc-fg-2:#454B54; --pc-fg-3:#6B727C;
+  --ui-font:'Open Sans',system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+
+/* -------------------------------------------------------------------------
+   2 · Compatibilidad con los tokens del host de Cowork.
+   Un fragmento armado para el chat suele estilarse con las variables del
+   design system del host (var(--color-text-primary), var(--s-3)…). Esas
+   variables NO existen fuera de Cowork: publicado en crudo, el entregable
+   sale con texto negro sobre negro, sin bordes y sin espaciado, y el defecto
+   aparece recién cuando alguien abre el link.
+
+   Esto es un PISO, no un mapeo completo del design system del host: cubre los
+   tokens que el catálogo usa de verdad. Si al verificar ves algo sin estilo,
+   el token que falta se agrega acá — no se parchea el fragmento.
+   ------------------------------------------------------------------------- */
+:root{
+  --font-sans:var(--ui-font);
+  --color-text-primary:var(--pc-fg);
+  --color-text-secondary:var(--pc-fg-2);
+  --color-text-tertiary:var(--pc-fg-3);
+  --color-text-info:var(--pc-blue-700);
+  --color-border-tertiary:var(--pc-rule);
+  --color-border-info:#B7D2FF;
+  --color-background-info:#EDF4FF;
+  --color-background-secondary:var(--pc-paper-2);
+  --border:1px solid var(--pc-rule);
+  --border-strong:1px solid var(--pc-rule-strong);
+  --border-radius-md:8px;  --r-md:8px;
+  --border-radius-lg:12px; --r-lg:12px;
+  --r-pill:999px;
+  --accent:var(--pc-blue);
+  --surface:var(--pc-paper);
+  --bg-elevated:var(--pc-paper);
+  --text-primary:var(--pc-fg);
+  --text-secondary:var(--pc-fg-2);
+  --text-muted:var(--pc-fg-3);
+  --fg:var(--pc-fg); --fg-1:var(--pc-fg); --fg-2:var(--pc-fg-2);
+  --fg-3:var(--pc-fg-3); --fg-4:var(--pc-fg-3);
+  --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px;
+  --dur-base:200ms; --ease-out:cubic-bezier(.2,.7,.3,1);
+
+  /* Alias de los otros shells del catálogo (SLDS, ui-*, surface-*), por si el
+     fragmento salió copiado de uno de ellos. Ordenados por uso real. */
+  --slds-border:var(--pc-rule); --slds-brand-dark:var(--pc-blue-700);
+  --slds-text-weak:var(--pc-fg-3);
+  --ui-border:var(--pc-rule); --ui-border-strong:var(--pc-rule-strong);
+  --ui-surface:var(--pc-paper);
+  --ui-fg:var(--pc-fg); --ui-fg2:var(--pc-fg-2); --ui-fg3:var(--pc-fg-3);
+  --surface-1:var(--pc-paper); --surface-2:var(--pc-paper-2);
+  --color-border-secondary:var(--pc-rule-strong);
+  --text-accent:var(--pc-blue-700);
+  --radius:8px;
+  --mermaid-font-family:var(--ui-font);
+}
+
+/* -------------------------------------------------------------------------
+   3 · Base mínima. Todo acá es sobrescribible por el <style> del fragmento:
+   selectores de un solo elemento, sin !important, sin layout impuesto.
+   ------------------------------------------------------------------------- */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  padding:clamp(20px,4vw,48px);
+  background:var(--pc-paper-2);
+  color:var(--pc-fg);
+  font-family:var(--ui-font);
+  font-size:15px;
+  line-height:1.6;
+}
+img,svg,video,canvas{max-width:100%;height:auto}
+table{border-collapse:collapse}
+:focus-visible{outline:2px solid var(--pc-blue);outline-offset:2px}
+
+@media print{
+  body{background:#fff;padding:0}
+}
+</style>
+</head>
+<body>
+__CUERPO__
+</body>
+</html>
