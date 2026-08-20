@@ -1,0 +1,23 @@
+{
+  "skill_name": "pc-meta-presentation-builder",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Ármame una presentación para mostrarle algo al cliente la semana que viene.",
+      "expected_output": "Pedido genérico sin área clara. El router debe: (1) llamar a read_me (silencioso) y mostrar el widget de área paso0-area (Patrón A) con las cards Comercial y Delivery del registry — NO listar opciones como bullets ni usar AskUserQuestion; (2) esperar la elección; (3) al elegir, derivar —transición invisible— al skill de área correspondiente (Comercial → pc-sales-presentation-builder; Delivery → pc-delivery-presentation-builder) pasándole el contexto ya dado. El router NO captura datos de cliente, NO barre conectores, NO arma el prompt.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Necesito el kickoff deck del proyecto con Farmatodo.",
+      "expected_output": "El pedido ya sugiere Delivery (kickoff = hito de proyecto). El router debe igual CONFIRMAR el área con el widget (con Delivery como opción recomendada) para no derivar a ciegas, y al confirmar derivar —transición invisible— a pc-delivery-presentation-builder pasándole que es un kickoff del proyecto con Farmatodo. No debe armar la presentación él mismo.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Ármame la propuesta de AgentForce para BBVA, ya tienen la Opp en Salesforce.",
+      "expected_output": "El pedido sugiere Comercial (propuesta + Opp en SF). El router confirma el área con el widget (Comercial recomendada) y deriva —invisible— a pc-sales-presentation-builder pasándole el contexto (propuesta AgentForce, BBVA, Opp existente). No captura ni ensambla nada por su cuenta.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<!--
+  catalog-viewer-template.html — Template del artifact de catálogo (Capacidad 3).
+
+  CÓMO USARLO (regla Q01: el template vive acá, no se improvisa en cada corrida):
+  1. Genera el inventario con:  audit_catalog.py --mode catalog --output catalog.json
+  2. Reemplaza el token  __CATALOG_JSON__  (dentro del <script id="catalog-data">)
+     por el contenido del array de skills de ese JSON.
+  3. Entrega el HTML resultante como artifact.
+
+  El viewer es tolerante a dos shapes: el de assets/catalog-schema.json
+  (area/object/systems/type a nivel raíz) y el del modo catalog de
+  audit_catalog.py (dimensiones bajo name_parts + inferred_systems).
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo de skills · ProContacto</title>
+<style>
+  :root {
+    --bg: #0f1219;
+    --surface: #181c26;
+    --surface-2: #20253328;
+    --border: #2a3142;
+    --text: #e6e9f0;
+    --text-dim: #9aa3b8;
+    --accent: #4f8cff;
+    --pc: #ff6b35;          /* acento ProContacto — ajustable a la marca */
+    --ext: #6b7280;
+    --radius: 10px;
+    --gap: 14px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 28px;
+    background: var(--bg); color: var(--text);
+    font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  header { margin-bottom: 20px; }
+  h1 { margin: 0 0 4px; font-size: 20px; }
+  .sub { color: var(--text-dim); font-size: 13px; }
+  .filters {
+    display: flex; flex-wrap: wrap; gap: var(--gap);
+    margin: 18px 0; padding: 14px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .filters label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--text-dim); }
+  .filters select, .filters input {
+    background: var(--bg); color: var(--text);
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 7px 9px; font-size: 13px; min-width: 150px;
+  }
+  .filters input { min-width: 220px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 9px 11px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { position: sticky; top: 0; background: var(--surface); color: var(--text-dim); font-weight: 600; cursor: pointer; user-select: none; }
+  th:hover { color: var(--text); }
+  tbody tr:hover { background: var(--surface-2); }
+  .name { font-weight: 600; }
+  .desc { color: var(--text-dim); max-width: 460px; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; border: 1px solid var(--border); }
+  .pill-pc { color: var(--pc); border-color: var(--pc); }
+  .pill-ext { color: var(--ext); border-color: var(--ext); }
+  .count { color: var(--text-dim); font-size: 13px; margin: 6px 2px; }
+  .empty { padding: 40px; text-align: center; color: var(--text-dim); }
+  code { background: var(--surface); padding: 1px 5px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Catálogo de skills · ProContacto</h1>
+  <div class="sub">Inventario generado por <code>pc-meta-skill-manager</code> · convención <code>pc-[área]-[sistema]-[objeto]-[acción]</code></div>
+</header>
+
+<div class="filters" id="filters">
+  <label>Buscar<input type="search" id="q" placeholder="nombre o descripción…"></label>
+  <label>Área<select id="f-area"><option value="">Todas</option></select></label>
+  <label>Sistema<select id="f-system"><option value="">Todos</option></select></label>
+  <label>Acción<select id="f-action"><option value="">Todas</option></select></label>
+  <label>Idioma<select id="f-language"><option value="">Todos</option></select></label>
+  <label>Origen<select id="f-origin"><option value="">Todos</option></select></label>
+</div>
+
+<div class="count" id="count"></div>
+<table>
+  <thead><tr>
+    <th data-k="directory_name">Skill</th>
+    <th data-k="area">Área</th>
+    <th data-k="system">Sistema</th>
+    <th data-k="object">Objeto</th>
+    <th data-k="action">Acción</th>
+    <th data-k="language">Idioma</th>
+    <th data-k="origin">Origen</th>
+    <th>Descripción</th>
+  </tr></thead>
+  <tbody id="rows"></tbody>
+</table>
+<div class="empty" id="empty" hidden></div>
+
+<script id="catalog-data" type="application/json">
+__CATALOG_JSON__
+</script>
+<script>
+(function () {
+  // --- Cargar datos (tolerante al placeholder sin reemplazar) ---
+  let raw = [];
+  try {
+    raw = JSON.parse(document.getElementById('catalog-data').textContent.trim());
+    if (raw && Array.isArray(raw.skills)) raw = raw.skills; // por si pegaron el JSON completo
+  } catch (e) { raw = []; }
+
+  // Normaliza ambos shapes a un registro plano.
+  const norm = raw.map(function (s) {
+    const np = s.name_parts || {};
+    const systems = s.systems || s.inferred_systems || [];
+    return {
+      directory_name: s.directory_name || s.name || '—',
+      area: s.area || np.area || '—',
+      system: s.system || np.system || (systems.length ? systems.join(', ') : '—'),
+      object: s.object || np.object || '—',
+      action: s.type || np.action || '—',
+      language: s.language || 'unknown',
+      origin: s.origin || 'procontacto',
+      description: s.description || ''
+    };
+  });
+
+  const rowsEl = document.getElementById('rows');
+  const emptyEl = document.getElementById('empty');
+  const countEl = document.getElementById('count');
+
+  if (!norm.length) {
+    document.querySelector('table').hidden = true;
+    document.getElementById('filters').hidden = true;
+    emptyEl.hidden = false;
+    emptyEl.innerHTML = 'Sin datos. Reemplaza el token <code>__CATALOG_JSON__</code> por el array del catálogo (modo <code>catalog</code> de <code>audit_catalog.py</code>).';
+    return;
+  }
+
+  // --- Poblar filtros con valores reales (regla Q05: opciones del dato, no inventadas) ---
+  function fill(id, key) {
+    const sel = document.getElementById(id);
+    const vals = Array.from(new Set(norm.map(function (r) { return r[key]; }).filter(function (v) { return v && v !== '—'; }))).sort();
+    vals.forEach(function (v) {
+      const o = document.createElement('option'); o.value = v; o.textContent = v; sel.appendChild(o);
+    });
+  }
+  fill('f-area', 'area'); fill('f-system', 'system');
+  fill('f-action', 'action'); fill('f-language', 'language'); fill('f-origin', 'origin');
+
+  let sortKey = 'directory_name', sortAsc = true;
+
+  function render() {
+    const q = document.getElementById('q').value.toLowerCase();
+    const fa = document.getElementById('f-area').value;
+    const fs = document.getElementById('f-system').value;
+    const fac = document.getElementById('f-action').value;
+    const fl = document.getElementById('f-language').value;
+    const fo = document.getElementById('f-origin').value;
+
+    let data = norm.filter(function (r) {
+      if (fa && r.area !== fa) return false;
+      if (fs && r.system !== fs) return false;
+      if (fac && r.action !== fac) return false;
+      if (fl && r.language !== fl) return false;
+      if (fo && r.origin !== fo) return false;
+      if (q && !(r.directory_name.toLowerCase().includes(q) || r.description.toLowerCase().includes(q))) return false;
+      return true;
+    });
+    data.sort(function (a, b) {
+      const x = (a[sortKey] || '').toString(), y = (b[sortKey] || '').toString();
+      return sortAsc ? x.localeCompare(y) : y.localeCompare(x);
+    });
+
+    rowsEl.innerHTML = data.map(function (r) {
+      const pill = r.origin === 'external'
+        ? '<span class="pill pill-ext">external</span>'
+        : '<span class="pill pill-pc">procontacto</span>';
+      const d = r.description.length > 180 ? r.description.slice(0, 180) + '…' : r.description;
+      return '<tr><td class="name">' + esc(r.directory_name) + '</td><td>' + esc(r.area) +
+        '</td><td>' + esc(r.system) + '</td><td>' + esc(r.object) + '</td><td>' + esc(r.action) +
+        '</td><td>' + esc(r.language) + '</td><td>' + pill + '</td><td class="desc">' + esc(d) + '</td></tr>';
+    }).join('');
+    countEl.textContent = data.length + ' de ' + norm.length + ' skills';
+    emptyEl.hidden = data.length > 0;
+    if (!data.length) emptyEl.textContent = 'Ningún skill matchea los filtros.';
+  }
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+
+  document.getElementById('filters').addEventListener('input', render);
+  document.querySelectorAll('th[data-k]').forEach(function (th) {
+    th.addEventListener('click', function () {
+      const k = th.getAttribute('data-k');
+      if (sortKey === k) sortAsc = !sortAsc; else { sortKey = k; sortAsc = true; }
+      render();
+    });
+  });
+  render();
+})();
+</script>
+</body>
+</html>

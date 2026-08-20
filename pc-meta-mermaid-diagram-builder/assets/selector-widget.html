@@ -1,0 +1,111 @@
+<h2 class="sr-only">Selector de tipo de diagrama mermaid según la metodología ProContacto</h2>
+<div style="padding:0.5rem 0;">
+  <p style="font-size:13px;color:var(--text-secondary);margin:0 0 12px;">Elegí qué querés representar y abro el generador con el tipo de mermaid adecuado.</p>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;">
+
+    <button onclick="sendPrompt('Quiero un diagrama de flujo (mermaid flowchart) con pc-meta-mermaid-diagram-builder. Preguntame qué proceso representar (AS-IS o TO-BE) o te paso el contenido, y después generá el artefacto interactivo con la barra de controles.')"
+      style="position:relative;border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;text-align:left;background:var(--surface-2);border:2px solid var(--border-accent);box-shadow:0 1px 2px rgba(0,0,0,0.04);cursor:pointer;">
+      <span style="position:absolute;top:-9px;left:14px;background:var(--bg-accent);color:var(--text-accent);font-size:11px;padding:2px 8px;border-radius:var(--radius);">recomendado</span>
+      <i class="ti ti-route" style="font-size:20px;color:var(--text-accent);" aria-hidden="true"></i>
+      <span>
+        <span style="font-size:13px;font-weight:500;color:var(--text-primary);">Proceso o flujo</span><br>
+        <span style="font-size:11px;color:var(--text-muted);">flowchart · AS-IS / TO-BE, decisiones, aprobaciones</span>
+      </span>
+    </button>
+
+    <button onclick="sendPrompt('Quiero un diagrama de actividad con carriles en el MODO SWIMLANE NATIVO (no mermaid) de pc-meta-mermaid-diagram-builder. Preguntame los carriles/actores, los pasos por carril y las conexiones, y generá el artefacto con el renderer swimlane nativo.')"
+      style="border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;text-align:left;background:var(--surface-2);border:0.5px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,0.04);cursor:pointer;">
+      <i class="ti ti-layout-columns" style="font-size:20px;color:var(--text-secondary);" aria-hidden="true"></i>
+      <span>
+        <span style="font-size:13px;font-weight:500;color:var(--text-primary);">Diagrama de actividad</span><br>
+        <span style="font-size:11px;color:var(--text-muted);">swimlane nativo · carriles por actor (tabla)</span>
+      </span>
+    </button>
+
+    <button onclick="sendPrompt('Quiero un diagrama entidad-relación (mermaid erDiagram) con pc-meta-mermaid-diagram-builder, para modelar objetos y relaciones (por ejemplo objetos Salesforce). Preguntame las entidades o te paso el esquema, y generá el artefacto.')"
+      style="border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;text-align:left;background:var(--surface-2);border:0.5px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,0.04);cursor:pointer;">
+      <i class="ti ti-table" style="font-size:20px;color:var(--text-secondary);" aria-hidden="true"></i>
+      <span>
+        <span style="font-size:13px;font-weight:500;color:var(--text-primary);">Modelo de datos</span><br>
+        <span style="font-size:11px;color:var(--text-muted);">erDiagram · entidades y relaciones</span>
+      </span>
+    </button>
+
+    <button onclick="sendPrompt('Quiero un diagrama de secuencia (mermaid sequenceDiagram) con pc-meta-mermaid-diagram-builder, para una integración entre sistemas. Preguntame los actores y los mensajes, y generá el artefacto.')"
+      style="border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;text-align:left;background:var(--surface-2);border:0.5px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,0.04);cursor:pointer;">
+      <i class="ti ti-arrows-exchange" style="font-size:20px;color:var(--text-secondary);" aria-hidden="true"></i>
+      <span>
+        <span style="font-size:13px;font-weight:500;color:var(--text-primary);">Secuencia de integración</span><br>
+        <span style="font-size:11px;color:var(--text-muted);">sequenceDiagram · mensajes entre sistemas</span>
+      </span>
+    </button>
+
+    <button onclick="sendPrompt('Quiero un diagrama de arquitectura de servicios (mermaid architecture-beta) con pc-meta-mermaid-diagram-builder. Preguntame los componentes e integraciones, y generá el artefacto.')"
+      style="border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;text-align:left;background:var(--surface-2);border:0.5px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,0.04);cursor:pointer;">
+      <i class="ti ti-sitemap" style="font-size:20px;color:var(--text-secondary);" aria-hidden="true"></i>
+      <span>
+        <span style="font-size:13px;font-weight:500;color:var(--text-primary);">Arquitectura</span><br>
+        <span style="font-size:11px;color:var(--text-muted);">architecture · componentes e integraciones</span>
+      </span>
+    </button>
+
+    <button onclick="sendPrompt('Quiero un diagrama de estados (mermaid stateDiagram-v2) con pc-meta-mermaid-diagram-builder, por ejemplo los estados de una Opportunity. Preguntame los estados y transiciones, y generá el artefacto.')"
+      style="border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;text-align:left;background:var(--surface-2);border:0.5px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,0.04);cursor:pointer;">
+      <i class="ti ti-circle-dot" style="font-size:20px;color:var(--text-secondary);" aria-hidden="true"></i>
+      <span>
+        <span style="font-size:13px;font-weight:500;color:var(--text-primary);">Estados de un registro</span><br>
+        <span style="font-size:11px;color:var(--text-muted);">stateDiagram · estados y transiciones</span>
+      </span>
+    </button>
+
+    <button onclick="sendPrompt('Quiero un cronograma en el MODO GANTT NATIVO (no mermaid) de pc-meta-mermaid-diagram-builder, por ejemplo el plan de Sprint 0 o las fases del proyecto. Preguntame tareas, fechas, responsables y dependencias, y generá el artefacto con el renderer Gantt nativo.')"
+      style="border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;text-align:left;background:var(--surface-2);border:0.5px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,0.04);cursor:pointer;">
+      <i class="ti ti-calendar" style="font-size:20px;color:var(--text-secondary);" aria-hidden="true"></i>
+      <span>
+        <span style="font-size:13px;font-weight:500;color:var(--text-primary);">Cronograma</span><br>
+        <span style="font-size:11px;color:var(--text-muted);">Gantt nativo · Sprint 0, fases, dependencias</span>
+      </span>
+    </button>
+
+  </div>
+
+  <div style="display:flex;gap:8px;align-items:center;margin-top:16px;padding-top:16px;border-top:0.5px solid var(--border);">
+    <label for="dtype" style="font-size:13px;color:var(--text-secondary);white-space:nowrap;">o elegí el tipo (mermaid)</label>
+    <select id="dtype" style="flex:1;">
+      <option value="flowchart">Proceso o flujo (flowchart)</option>
+      <option value="sequenceDiagram">Secuencia (sequenceDiagram)</option>
+      <option value="classDiagram">Clases UML (classDiagram)</option>
+      <option value="stateDiagram-v2">Estados (stateDiagram-v2)</option>
+      <option value="erDiagram">Entidad-relación (erDiagram)</option>
+      <option value="journey">Recorrido de usuario (journey)</option>
+      <option value="pie">Torta (pie)</option>
+      <option value="quadrantChart">Cuadrante (quadrantChart)</option>
+      <option value="requirementDiagram">Requisitos (requirementDiagram)</option>
+      <option value="gitGraph">Git (gitGraph)</option>
+      <option value="mindmap">Mapa mental (mindmap)</option>
+      <option value="timeline">Línea de tiempo (timeline)</option>
+      <option value="C4Context">Arquitectura C4 (C4Context)</option>
+      <option value="architecture-beta">Arquitectura de servicios (architecture)</option>
+      <option value="sankey-beta">Sankey (sankey)</option>
+      <option value="xychart-beta">Ejes XY (xychart)</option>
+      <option value="block-beta">Bloques (block)</option>
+      <option value="kanban">Kanban (kanban)</option>
+      <option value="radar-beta">Radar (radar)</option>
+      <option value="treemap-beta">Treemap (treemap)</option>
+    </select>
+    <button onclick="pickType()" style="white-space:nowrap;">Crear <span aria-hidden="true">↗</span></button>
+  </div>
+
+  <p style="font-size:12px;color:var(--text-muted);margin:12px 0 0;display:flex;gap:6px;align-items:flex-start;">
+    <i class="ti ti-info-circle" style="font-size:15px;flex:none;margin-top:1px;" aria-hidden="true"></i>
+    <span>¿BPMN 2.0 formal (pools + gateways tipados + message flows)? Eso no lo cubre ni mermaid ni el swimlane nativo — te derivo a draw.io / bpmn-js.</span>
+  </p>
+</div>
+<script>
+  function pickType(){
+    var s=document.getElementById('dtype');
+    var v=s.value, label=s.options[s.selectedIndex].text;
+    sendPrompt('Quiero un diagrama de tipo "'+v+'" (mermaid — '+label+') con pc-meta-mermaid-diagram-builder. Guiame para armarlo: preguntame el contenido necesario y después generá el artefacto interactivo con la barra de controles.');
+  }
+</script>

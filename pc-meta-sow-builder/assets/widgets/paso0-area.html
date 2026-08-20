@@ -1,0 +1,24 @@
+<!-- Router — pregunta de área (Patrón A). Widget del skill pc-meta-sow-builder.
+     Las cards se generan desde el REGISTRY del SKILL.md (una por área): título, descripción,
+     "ideal para" y el sendPrompt que dispara el hand-off al skill especializado. Hoy hay 2 áreas;
+     agregar una nueva = agregar su card acá + su fila en el registry. Pasar tal cual a show_widget. -->
+<h2 class="sr-only">Elegir para qué área es el SOW; la elección deriva al skill especializado</h2>
+<div style="padding:0.5rem 0; font-family:var(--font-sans);">
+  <div style="font-size:12px; color:var(--color-text-tertiary); margin-bottom:6px;">SOW builder · elige el área</div>
+  <div style="font-size:18px; font-weight:500; color:var(--color-text-primary); margin-bottom:16px;">¿Para qué es el SOW?</div>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:16px;">
+    <button type="button" onclick="sendPrompt('El SOW es para el área Comercial: el alcance de un deal en venta, sobre la Quote de Salesforce.')" style="cursor:pointer; text-align:left; border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:20px; background:transparent; display:flex; flex-direction:column; gap:8px;">
+      <i class="ti ti-briefcase" style="font-size:26px; color:var(--color-text-secondary);" aria-hidden="true"></i>
+      <span style="font-size:16px; font-weight:500; color:var(--color-text-primary);">Comercial</span>
+      <span style="font-size:13px; color:var(--color-text-secondary); line-height:1.5;">Alcance de un deal en venta: historias cotizadas sobre la Quote, anexo del contrato y planilla de revisión.</span>
+      <span style="font-size:12px; color:var(--color-text-tertiary); margin-top:2px;">Ideal antes de la firma, con oportunidad en Salesforce.</span>
+    </button>
+    <button type="button" onclick="sendPrompt('El SOW es para el área Delivery: el SOW Refinado del Sprint 0 de un proyecto ya vendido.')" style="cursor:pointer; text-align:left; border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:20px; background:transparent; display:flex; flex-direction:column; gap:8px;">
+      <i class="ti ti-rocket" style="font-size:26px; color:var(--color-text-secondary);" aria-hidden="true"></i>
+      <span style="font-size:16px; font-weight:500; color:var(--color-text-primary);">Delivery</span>
+      <span style="font-size:13px; color:var(--color-text-secondary); line-height:1.5;">SOW Refinado del Sprint 0: documento Word con el alcance funcional completo, desde el relevamiento de discovery.</span>
+      <span style="font-size:12px; color:var(--color-text-tertiary); margin-top:2px;">Ideal con el proyecto ya vendido y los workshops hechos.</span>
+    </button>
+  </div>
+</div>

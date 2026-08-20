@@ -1,0 +1,128 @@
+<!--
+  skill-picker-panel.html — widget SELECTOR del explainer (Modo Elegir/Filtrar).
+  Q01: markup fijo acá. Q08: toda la interacción cableada en este archivo.
+  DATOS (único placeholder): __SKILLS_JSON__ = array de fichas breves:
+    [{"name","area","type","one_liner","connectors":[...]}]
+  Comportamiento (NO editar por corrida): buscador local + click en tarjeta que
+  dispara sendPrompt("Explícame cómo funciona <name>").
+-->
+<h2 class="sr-only">Tus skills de ProContacto</h2>
+<div id="picker-root" style="padding: 8px 0; font-family: var(--font-sans, system-ui, sans-serif);">
+  <p style="font-size: 14px; color: var(--color-text-secondary); margin: 0 0 12px;">
+    Estos son los skills que tienes disponibles. Toca uno para ver cómo funciona
+    —qué hace, qué conectores usa y el paso a paso—.
+  </p>
+
+  <input id="skill-search" type="search" placeholder="Buscar por nombre, función o conector…"
+    aria-label="Buscar skills"
+    style="width: 100%; box-sizing: border-box; padding: 10px 12px; margin: 0 0 14px;
+           font-size: 14px; color: var(--color-text-primary);
+           background: var(--color-background-secondary);
+           border: 1px solid var(--color-border, rgba(128,128,128,.25));
+           border-radius: var(--border-radius-md, 8px);" />
+
+  <p id="skill-count" style="font-size: 12px; color: var(--color-text-tertiary); margin: 0 0 10px;"></p>
+
+  <div id="skill-groups"></div>
+
+  <p id="skill-empty" style="display:none; font-size: 14px; color: var(--color-text-tertiary);
+       padding: 16px; text-align:center;">
+    No hay skills que coincidan con la búsqueda.
+  </p>
+</div>
+
+<script>
+(function () {
+  var SKILLS = __SKILLS_JSON__;
+  if (!Array.isArray(SKILLS)) SKILLS = [];
+
+  var AREA_LABEL = {
+    administracion: "Administración", comercial: "Comercial", delivery: "Delivery",
+    devops: "DevOps", legales: "Legales", marketing: "Marketing", meta: "Meta / transversales",
+    rrhh: "RR. HH."
+  };
+
+  var groupsEl = document.getElementById("skill-groups");
+  var countEl = document.getElementById("skill-count");
+  var emptyEl = document.getElementById("skill-empty");
+  var searchEl = document.getElementById("skill-search");
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function chip(text) {
+    return '<span style="display:inline-block; font-size:11px; line-height:1;' +
+      ' padding:4px 7px; margin:0 4px 4px 0; border-radius:999px;' +
+      ' background:var(--color-background-tertiary, rgba(128,128,128,.14));' +
+      ' color:var(--color-text-secondary);">' + esc(text) + '</span>';
+  }
+
+  function card(s) {
+    var conns = (s.connectors || []).slice(0, 4).map(chip).join("");
+    return '' +
+      '<button type="button" class="skill-card" data-name="' + esc(s.name) + '"' +
+      ' style="display:block; width:100%; text-align:left; cursor:pointer;' +
+      ' padding:12px 14px; margin:0 0 8px; border-radius:var(--border-radius-md,8px);' +
+      ' border:1px solid var(--color-border, rgba(128,128,128,.25));' +
+      ' background:var(--color-background-secondary); color:inherit;">' +
+        '<div style="display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;">' +
+          '<span style="font-weight:600; font-size:14px; color:var(--color-text-primary);">' + esc(s.name) + '</span>' +
+          (s.type ? '<span style="font-size:11px; color:var(--color-text-tertiary);">' + esc(s.type) + '</span>' : '') +
+        '</div>' +
+        '<div style="font-size:13px; color:var(--color-text-secondary); margin:5px 0 8px;">' + esc(s.one_liner || "") + '</div>' +
+        '<div>' + (conns || '<span style="font-size:11px; color:var(--color-text-tertiary);">sin conectores externos</span>') + '</div>' +
+      '</button>';
+  }
+
+  function matches(s, q) {
+    if (!q) return true;
+    var hay = (s.name + " " + (s.one_liner || "") + " " + (s.area || "") + " " +
+      (s.type || "") + " " + (s.connectors || []).join(" ")).toLowerCase();
+    return q.split(/\s+/).every(function (t) { return hay.indexOf(t) !== -1; });
+  }
+
+  function render(q) {
+    q = (q || "").trim().toLowerCase();
+    var byArea = {};
+    var total = 0;
+    SKILLS.forEach(function (s) {
+      if (!matches(s, q)) return;
+      (byArea[s.area] = byArea[s.area] || []).push(s);
+      total++;
+    });
+
+    var areas = Object.keys(byArea).sort();
+    var html = "";
+    areas.forEach(function (area) {
+      html += '<div style="margin:0 0 16px;">' +
+        '<h3 style="font-size:12px; text-transform:uppercase; letter-spacing:.04em;' +
+        ' color:var(--color-text-tertiary); margin:0 0 8px;">' + esc(AREA_LABEL[area] || area) + '</h3>';
+      byArea[area].sort(function (a, b) { return a.name < b.name ? -1 : 1; })
+        .forEach(function (s) { html += card(s); });
+      html += '</div>';
+    });
+
+    groupsEl.innerHTML = html;
+    countEl.textContent = total + (total === 1 ? " skill disponible" : " skills disponibles");
+    emptyEl.style.display = total === 0 ? "block" : "none";
+  }
+
+  // Buscador local (Q08: listener cableado acá).
+  searchEl.addEventListener("input", function () { render(searchEl.value); });
+
+  // Click en tarjeta por delegación → pide la explicación de ese skill.
+  groupsEl.addEventListener("click", function (e) {
+    var btn = e.target.closest(".skill-card");
+    if (!btn) return;
+    var name = btn.getAttribute("data-name");
+    if (name && typeof window.sendPrompt === "function") {
+      window.sendPrompt("Explícame cómo funciona " + name);
+    }
+  });
+
+  render("");
+})();
+</script>

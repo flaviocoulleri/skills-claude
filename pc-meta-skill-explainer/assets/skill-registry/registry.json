@@ -1,0 +1,2414 @@
+{
+  "_doc": "AUTO-GENERADO por _shared/skill-registry/build_registry.py — NO editar a mano. Fuente de verdad del explainer (pc-meta-skill-explainer). Regenerar tras cambios al catálogo.",
+  "count": 78,
+  "skills": [
+    {
+      "name": "pc-admin-interno-adr-generator",
+      "area": "administracion",
+      "type": "generator",
+      "one_liner": "Genera entradas de ADR (Architecture Decision Record) en formato estándar de ProContacto.",
+      "connectors": [
+        "jira"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [],
+      "writes": false,
+      "steps": [],
+      "language": "es",
+      "version": null,
+      "deployed": false,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-admin-interno-user-orchestrator",
+      "area": "administracion",
+      "type": "orchestrator",
+      "one_liner": "Da de alta, da de baja y audita accesos de colaboradores de ProContacto en los sistemas corporativos (Salesforce, Jira, Slack, Odoo, Claude, GitHub y otros según rol), usando Google Workspace Directory como fuente de verdad.",
+      "connectors": [
+        "jira",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "requiere-line",
+      "when_to_use": [
+        "dar de alta a [nombre]",
+        "onboarding de [nombre]",
+        "créale los usuarios",
+        "audita los accesos del equipo",
+        "valida que [nombre] tenga todo",
+        "detecta usuarios huérfanos"
+      ],
+      "writes": true,
+      "steps": [],
+      "language": "bi",
+      "version": null,
+      "deployed": false,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-sales-drive-templates-curator",
+      "area": "comercial",
+      "type": "utility",
+      "one_liner": "Cura la biblioteca de plantillas de presentaciones genéricas de ProContacto en Google Drive, trabajando UNA industria por corrida.",
+      "connectors": [
+        "google-drive",
+        "salesforce"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "curá las plantillas",
+        "arma las plantillas de {industria}",
+        "completa la carpeta de presentaciones genéricas",
+        "sugerime presentaciones para plantillas",
+        "qué decks puedo usar de plantilla",
+        "trabaja la industria de hoy"
+      ],
+      "writes": true,
+      "steps": [],
+      "language": "bi",
+      "version": "1.1.0",
+      "deployed": false,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-sales-odoo-support-renewal-reviewer",
+      "area": "comercial",
+      "type": "reviewer",
+      "one_liner": "Revisa contratos de soporte (Support) en Odoo que están cerrados y no han sido renovados, identifica los clientes con mayor riesgo de pérdida de ingresos recurrentes, y presenta un panel visual con las oportunidades de renovación.",
+      "connectors": [
+        "odoo",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "contratos de soporte vencidos",
+        "contratos sin renovar",
+        "revisar renovaciones",
+        "qué contratos de soporte cerraron",
+        "renovación de soporte",
+        "support renewal"
+      ],
+      "writes": true,
+      "steps": [],
+      "language": "es",
+      "version": "1.0.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-sales-presentation-builder",
+      "area": "comercial",
+      "type": "builder",
+      "one_liner": "Crea la presentación o propuesta COMERCIAL de ProContacto **acá mismo**, como artefacto HTML navegable, y desde el chat la exporta a PDF, PowerPoint o imágenes — usa este skill aunque pidan \"PowerPoint\" o \".pptx\": el .pptx sale exportado de",
+      "connectors": [
+        "gmail",
+        "google-calendar",
+        "google-drive",
+        "readai",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "PowerPoint",
+        ".pptx",
+        "quiero crear/armar una propuesta",
+        "propuesta comercial",
+        "propuesta para la empresa X",
+        "cotizar"
+      ],
+      "writes": true,
+      "steps": [
+        "Paso 0 — Red de seguridad de área",
+        "Paso 1A.0 — Gate de Oportunidad en Salesforce (anti shadow opportunity)",
+        "Paso 1A.a — A medida",
+        "Paso 1A.b — Base de Drive",
+        "Paso 2 — Capturar cliente, industria, contexto (web-first)",
+        "Paso 2.5 — Fetch del sitio del cliente (si se proporcionó la web)",
+        "Paso 3 — Enriquecer con conectores (opcional, recomendado)",
+        "Paso 4 — Personalización por industria",
+        "Paso 4.5 — Resolver el pricing",
+        "Paso 4.6 — Estrategia de precio (opcional, sólo si hay número)"
+      ],
+      "language": "bi",
+      "version": "2.2.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-sales-salesforce-opportunitytemplate-builder",
+      "area": "comercial",
+      "type": "builder",
+      "one_liner": "Gobierna el ciclo de vida de los templates de cotización de ProContacto en Salesforce.",
+      "connectors": [
+        "google-drive",
+        "jira",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "requiere-line",
+      "when_to_use": [
+        "crea un template",
+        "migremos este template al modelo simple",
+        "agrega una Historia al catálogo",
+        "audita los templates activos",
+        "quiero ver qué templates no se usan",
+        "depreca este template"
+      ],
+      "writes": true,
+      "steps": [],
+      "language": "bi",
+      "version": "1.1.0",
+      "deployed": false,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-sales-sf-account-builder",
+      "area": "comercial",
+      "type": "builder",
+      "one_liner": "Identifica, crea y actualiza Cuentas y Contactos en Salesforce para ProContacto.",
+      "connectors": [
+        "gmail",
+        "google-calendar",
+        "google-drive",
+        "readai",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "requiere-line",
+      "when_to_use": [
+        "carga al cliente",
+        "crea la cuenta de X",
+        "carga los contactos de esta reunión",
+        "verifica si X existe en SF",
+        "suma estos contactos al cliente Y",
+        "enriquece los contactos"
+      ],
+      "writes": true,
+      "steps": [
+        "Paso 1 — Identificar al cliente",
+        "Paso 2 — Mini-sweep dirigido a personas",
+        "Paso 3 — Dedupe contra Contacts existentes en SF",
+        "Paso 4 — Preview y confirmación al AE",
+        "Paso 5 — Crear / actualizar en Salesforce + Drive",
+        "Paso 6 — Cierre + artefacto Cowork del cliente"
+      ],
+      "language": "bi",
+      "version": "1.2.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-sales-sf-commit-pipeline",
+      "area": "comercial",
+      "type": "utility",
+      "one_liner": "Vista manager del Commit de ventas de ProContacto.",
+      "connectors": [
+        "gmail",
+        "google-calendar"
+      ],
+      "connectors_source": "requiere-line",
+      "when_to_use": [
+        "Deal · Empresa",
+        "commit pipeline",
+        "ver el commit",
+        "oportunidades en commit",
+        "pipeline commit del equipo",
+        "revisar el commit del equipo"
+      ],
+      "writes": false,
+      "steps": [
+        "Paso de inicio: Verificar el conector",
+        "Paso 1: Identificar al manager logueado (solo para el header)",
+        "Paso 2: Traer el Commit de TODO el equipo (una sola query, sin filtrar por owner)",
+        "Paso 3: Calcular el score SF-only de cada deal (0–100)",
+        "Paso 4: Ordenar y armar los chips de alerta",
+        "Paso 5: Generar las preguntas de la revisión de Commit",
+        "Paso 6: Renderizar la vista",
+        "Paso 7: Acciones (kebab por fila, bulk-bar, acciones rápidas)"
+      ],
+      "language": "es",
+      "version": "1.0.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-sales-sf-contract-activator",
+      "area": "comercial",
+      "type": "utility",
+      "one_liner": "Busca contratos firmados en Odoo (suscripción en stage Closed / In Progress / To Upsell) que aún no están activados en Salesforce y recomienda activarlos.",
+      "connectors": [
+        "docusign",
+        "odoo",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "activa los contratos que ya se firmaron",
+        "qué contratos puedo activar",
+        "pasa a Closed Won las oportunidades de los contratos firmados",
+        "contratos firmados en Odoo pero en Draft en SF",
+        "suscripciones firmadas sin id de salesforce",
+        "activate signed contracts"
+      ],
+      "writes": true,
+      "steps": [
+        "Paso 0 — Alcance",
+        "Paso 1 — Sección 1: candidatos SF \"listos\"",
+        "Paso 2 — Sección 2: firmados en Odoo sin ID de SF",
+        "Paso 3 — Panel de recomendación (widget)",
+        "Paso 4 — Activar (Sección 1)",
+        "Paso 5 — Buscar y vincular (Sección 2)",
+        "Paso 6 — Cerrar con el usuario"
+      ],
+      "language": "bi",
+      "version": "1.0.1",
+      "deployed": false,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-sales-sf-contract-builder",
+      "area": "comercial",
+      "type": "builder",
+      "one_liner": "Crea Contracts en Salesforce (SOLO Salesforce — el lado Odoo lo maneja el orchestrator/activator), desde un contrato shadow de pc-sales-sf-contract-signature-orchestrator o un pedido directo del comercial o de legales.",
+      "connectors": [
+        "docusign",
+        "google-drive",
+        "odoo",
+        "readai",
+        "salesforce"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "carga el contrato de X",
+        "crea el Contract en SF",
+        "carga el envelope de DocuSign",
+        "registra el contrato firmado",
+        "vincula las historias al contrato",
+        "create contract in SF"
+      ],
+      "writes": true,
+      "steps": [
+        "Paso 0 — Captura del contexto",
+        "Paso 1 — ¿Ya existe el Contract en Salesforce?",
+        "Paso 1.5 — Capturar los documentos del deal (historias + propuesta + wireframe)",
+        "Paso 1.6 — Revisión de consistencia del alcance (\"cuestionar lo que se vendió\") — ADVISORY, NUNCA bloquea",
+        "Paso 2 — Recolectar datos mínimos",
+        "Paso 3 — Mostrar payload y confirmar",
+        "Paso 3.5 — Gate de pre-escritura (BLOQUEANTE — Contrato de escritura)",
+        "Paso 4 — Ejecutar las escrituras",
+        "Paso 5 — Notificar al orchestrator (si aplica)",
+        "Paso 6 — Cerrar con el usuario"
+      ],
+      "language": "bi",
+      "version": "1.14.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-sales-sf-contract-draft-tracker",
+      "area": "comercial",
+      "type": "tracker",
+      "one_liner": "Persigue los Contracts de Salesforce que quedaron en Draft o In Approval Process y cierra su limbo.",
+      "connectors": [
+        "odoo",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "revisa los contratos en borrador",
+        "persigue los drafts",
+        "qué contratos siguen en borrador",
+        "pregunta a los owners por sus contratos en draft",
+        "limpia los contratos viejos en borrador",
+        "chase draft contracts"
+      ],
+      "writes": true,
+      "steps": [
+        "Fase A cierra el ciclo de lo ya preguntado: sin ella el skill sería un notificador.",
+        "Fase B abre el ciclo nuevo, y como cada ronda deja su hilo en Slack, el estado vive en",
+        "Por eso el orden importa: primero cosechar, después preguntar. Si preguntas antes, vuelves a"
+      ],
+      "language": "bi",
+      "version": "1.0.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-sales-sf-contract-signature-orchestrator",
+      "area": "comercial",
+      "type": "orchestrator",
+      "one_liner": "Detecta contratos shadow y persigue firmas en ProContacto cruzando Salesforce, Odoo (sale.subscription), Slack, Gmail, Drive, Calendar y ReadAI.",
+      "connectors": [
+        "odoo",
+        "salesforce"
+      ],
+      "connectors_source": "requiere-line",
+      "when_to_use": [
+        "revisa los contratos pendientes",
+        "qué contratos faltan firmar",
+        "busca contratos shadow",
+        "reconcilia SF con Odoo",
+        "persigue las firmas",
+        "estado de contratos"
+      ],
+      "writes": true,
+      "steps": [
+        "Paso 1 — Validar invocador + definir alcance temporal",
+        "Paso 2 — Barrido multi-fuente (sin picker)",
+        "Paso 3 — Decision tree de clasificación (seguir EN ORDEN)",
+        "Paso 4 — Acción por estado",
+        "Paso 5 — Renderizar el panel con showwidget",
+        "Paso 6 — Templates de Slack DM (tono CONSULTA — usar copy-paste)",
+        "Paso 7 — Resumen final en chat"
+      ],
+      "language": "bi",
+      "version": "4.3.0",
+      "deployed": false,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-sales-sf-demo-builder",
+      "area": "comercial",
+      "type": "builder",
+      "one_liner": "Arma ambientes demo comerciales de Salesforce Sales Cloud para el equipo de preventa de ProContacto siguiendo el \"Manual comercial para demos de Sales Cloud\".",
+      "connectors": [
+        "salesforce"
+      ],
+      "connectors_source": "requiere-line",
+      "when_to_use": [
+        "Manual comercial para demos de Sales Cloud",
+        "Demo",
+        "armar demo de Sales Cloud",
+        "preparar SDO comercial",
+        "configurar ambiente demo Salesforce",
+        "armar el SDO para [cliente]"
+      ],
+      "writes": true,
+      "steps": [
+        "Fase 0 — Selección del ambiente target",
+        "Fase 1 — Captura de contexto del cliente",
+        "Fase 2 — Ejecución automática del armado",
+        "Fase 3 — Verificación previa a la demo",
+        "Fase 4 — Output final: dos entregables"
+      ],
+      "language": "bi",
+      "version": "1.1.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-sales-sf-forecast-reviewer",
+      "area": "comercial",
+      "type": "reviewer",
+      "one_liner": "Forecast de pipeline para comerciales de ProContacto.",
+      "connectors": [
+        "gmail",
+        "google-calendar",
+        "google-drive",
+        "readai",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [],
+      "writes": true,
+      "steps": [
+        "Paso de inicio: Verificar conectores antes de comenzar",
+        "Paso 0: Preguntar el modo de uso",
+        "Paso 1: Identificar al comercial a analizar",
+        "Paso 2: Fetch del pipeline (SOLO lo de esta vista)",
+        "Paso 3: Calcular el scoring de cada oportunidad (0–100)",
+        "Paso 4: Detectar oportunidades \"shadow\"",
+        "Paso 5: Generar preguntas de 1:1 de PIPELINE",
+        "Paso 6: Renderizar la vista PIPELINE",
+        "Paso 7: Fetch + render de la vista Quota",
+        "Paso 8: Fetch + render de la vista Contactos"
+      ],
+      "language": "es",
+      "version": "2.0.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-sales-sf-opportunity-builder",
+      "area": "comercial",
+      "type": "builder",
+      "one_liner": "Crea y actualiza Oportunidades en Salesforce para ProContacto.",
+      "connectors": [
+        "gmail",
+        "google-calendar",
+        "google-drive",
+        "readai",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "requiere-line",
+      "when_to_use": [
+        "carga la oportunidad",
+        "crea la Opp de X",
+        "ármame la orden de magnitud",
+        "estima este deal",
+        "pasa esto a oportunidad"
+      ],
+      "writes": true,
+      "steps": [
+        "Paso 1 — Recibir / identificar Account",
+        "Paso 2 — Barrido multi-fuente + clasificación de etapa",
+        "Paso 3 — Detectar industria y familias de producto",
+        "Paso 4 — Buscar el template más cercano",
+        "Paso 5 — Derivar Record Type y Business Unit",
+        "Paso 6 — Dedupe de Opportunities abiertas",
+        "Paso 7 — Preview y gate (Fase 1 base vs ROM)",
+        "Paso 8 — Crear la Opportunity en SF",
+        "Paso 9 — OpportunityContactRole",
+        "Paso 10 — (opcional) Cargar la Orden de Magnitud a nivel de Oportunidad"
+      ],
+      "language": "bi",
+      "version": "1.6.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-sales-sf-partnerfee-builder",
+      "area": "comercial",
+      "type": "builder",
+      "one_liner": "Crea Opportunities de Record Type Partner Fee (PL) en Salesforce — la opp espejo que registra el fee/comisión que cobra ProContacto como partner de Salesforce, siempre colgada de una Parent Opportunity existente.",
+      "connectors": [
+        "salesforce"
+      ],
+      "connectors_source": "requiere-line",
+      "when_to_use": [
+        "ármame una partner fee",
+        "crea la PL de X",
+        "carga el partner fee",
+        "necesito la opp de PL",
+        "ármame la partner fee opportunity",
+        "registra el fee de partner"
+      ],
+      "writes": true,
+      "steps": [],
+      "language": "bi",
+      "version": "1.4.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-sales-sf-partnerlead-builder",
+      "area": "comercial",
+      "type": "builder",
+      "one_liner": "Registra Partner Leads (deal registration) en la Partner Community de Salesforce (partners.salesforce.com) manejando por JS el wizard New Lead/Deal, que es un Screen Flow en shadow DOM y NO tiene API disponible: requiere Claude in Chrome.",
+      "connectors": [
+        "claude-in-chrome",
+        "salesforce"
+      ],
+      "connectors_source": "declared",
+      "when_to_use": [
+        "registra el partner lead",
+        "carga el PL de X",
+        "registra el deal ante Salesforce",
+        "deal registration",
+        "necesito el código PL",
+        "registra la oportunidad en la partner community"
+      ],
+      "writes": true,
+      "steps": [
+        "Lee la Opportunity de origen en una sola query (Opp + Account + contact roles).",
+        "Agrupa el alcance por plataforma y determina cuántos PL hay que crear.",
+        "Precarga los campos y muestra un widget editable con las pantallas del wizard: los datos",
+        "Con el OK, abre el wizard en la Partner Community y llena las 5 pantallas por JS, una corrida",
+        "Hace Submit, verifica el resultado y captura el código PL- de cada lead.",
+        "Entrega los códigos y ofrece el handoff a pc-sales-sf-partnerfee-builder."
+      ],
+      "language": "bi",
+      "version": "1.2.0",
+      "deployed": true,
+      "help_quality": "rich"
+    },
+    {
+      "name": "pc-sales-sf-quote-builder",
+      "area": "comercial",
+      "type": "builder",
+      "one_liner": "Construye Quotes en Salesforce con líneas PLANAS — solo Historias (Modo A, alcance funcional) o solo Recursos (Modo B: Support/Outsourcing/Training), sin Epics ni Tasks.",
+      "connectors": [
+        "google-drive",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "requiere-line",
+      "when_to_use": [
+        "ármame la quote",
+        "estímame la oportunidad",
+        "build the quote",
+        "importa las historias del doc",
+        "arma la cotización desde estas HU"
+      ],
+      "writes": true,
+      "steps": [
+        "Paso 1 — Asegurar Opp existente (delegar o re-querear)",
+        "Paso 2 — Detectar Quote(s) previa(s) y decidir qué hacer",
+        "Paso 3 — Determinar Modo (A/B) y elegir el camino",
+        "Paso 5 — Crear Quote + QuoteLineGroups (+ seed del template)",
+        "Paso 12 — Discovery liviano por industria (solo camino Asistido)",
+        "Paso 13 — (Referencia) Matriz Record Type → Modo",
+        "Paso 14 — Armar las líneas",
+        "Paso 15 — Orden de Magnitud del deal (solo para reporting)",
+        "Paso 16.5 — Pre-flight de integridad del plan en memoria (BLOQUEANTE)",
+        "Paso 17 — Crear líneas adicionales y sincronizar la Quote"
+      ],
+      "language": "bi",
+      "version": "1.9.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-sales-sf-sow-builder",
+      "area": "comercial",
+      "type": "builder",
+      "one_liner": "Documenta el SOW comercial (Statement of Work / alcance) sobre una Quote de Salesforce: toma las Historias de Usuario que viven como QuoteLineItem (Story), verifica completitud (estándares, Tipo de Funcionalidad en Scope__c, transversales,",
+      "connectors": [
+        "google-drive",
+        "jira",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "armar el SOW comercial",
+        "SOW/alcance sobre la Quote/cotización",
+        "exportar el SOW",
+        "anexo del contrato",
+        "documento de alcance para el cliente",
+        "ármame un SOW"
+      ],
+      "writes": true,
+      "steps": [],
+      "language": "bi",
+      "version": "2.1.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-cg-cloud-guide",
+      "area": "delivery",
+      "type": "guide",
+      "one_liner": "Comprehensive reference and configuration guide for Salesforce Consumer Goods Cloud (CG Cloud) and CG Offline.",
+      "connectors": [
+        "salesforce"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [],
+      "writes": false,
+      "steps": [],
+      "language": "es",
+      "version": "1.0.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-cg-cloud-offline-dev-guide",
+      "area": "delivery",
+      "type": "guide",
+      "one_liner": "Guía de desarrollo para Salesforce Consumer Goods Cloud Offline, la app móvil de retail execution que se construye con el Modeler basado en VS Code.",
+      "connectors": [
+        "salesforce"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [],
+      "writes": true,
+      "steps": [],
+      "language": "es",
+      "version": null,
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-cg-cloud-userstory-generator",
+      "area": "delivery",
+      "type": "generator",
+      "one_liner": "Salesforce Consumer Goods (CG) Cloud User Story writer and functional analyst.",
+      "connectors": [
+        "figma",
+        "google-drive",
+        "jira",
+        "salesforce"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [],
+      "writes": true,
+      "steps": [],
+      "language": "es",
+      "version": "1.1.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-crm-atlas-solution-architect",
+      "area": "delivery",
+      "type": "utility",
+      "one_liner": "Diseña la solución Salesforce dentro del Atlas del cliente: modelo de datos (objetos, campos, picklists y relaciones), pantallas descritas como datos para que se rendericen en SLDS, máquinas de estado de los objetos con ciclo de vida, arqui",
+      "connectors": [
+        "bitbucket",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "declared",
+      "when_to_use": [
+        "define el modelo de datos",
+        "agrega los campos de este objeto",
+        "diseña la pantalla de pedidos",
+        "arma el ciclo de estados",
+        "carga los roles y permisos",
+        "actualiza el mapa de sistemas"
+      ],
+      "writes": true,
+      "steps": [
+        "Lee el alcance y los gaps del proyecto: solo diseña lo que está vendido.",
+        "Modelo de datos: objetos (estándar y custom) y relaciones; a nivel v2, los campos con API",
+        "Pantallas como datos: cada una se describe (objeto, compact layout, secciones y campos,",
+        "Máquinas de estado: estados desde el picklist del objeto y transiciones con quién o qué",
+        "Arquitectura: sistemas que participan y cómo se conectan (el detalle de cada integración",
+        "Permisos: roles del proyecto y su acceso por objeto; a nivel v2, Permission Sets y grupos.",
+        "Delega la publicación en pc-delivery-atlas-version-manager."
+      ],
+      "language": "es",
+      "version": "1.0.0",
+      "deployed": false,
+      "help_quality": "rich"
+    },
+    {
+      "name": "pc-crm-salesforce-data-dictionary-generator",
+      "area": "delivery",
+      "type": "generator",
+      "one_liner": "Salesforce Data Dictionary (DDD / Diccionario de Datos) generator and updater.",
+      "connectors": [
+        "jira",
+        "salesforce"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [],
+      "writes": true,
+      "steps": [],
+      "language": "es",
+      "version": "1.1.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-crm-salesforce-dev-guide",
+      "area": "delivery",
+      "type": "guide",
+      "one_liner": "Writes and debugs Apex code, builds Lightning Web Components, optimizes SOQL queries, implements triggers, batch jobs, platform events, and integrations on the Salesforce platform.",
+      "connectors": [
+        "google-drive",
+        "salesforce"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [],
+      "writes": true,
+      "steps": [],
+      "language": "es",
+      "version": "1.2.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-crm-salesforce-field-creator",
+      "area": "delivery",
+      "type": "creator",
+      "one_liner": "Guides Salesforce admins through creating custom fields from a Data Dictionary (Diccionario de Datos), images, or manually provided field lists.",
+      "connectors": [
+        "salesforce"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "I have a spreadsheet with fields to create",
+        "need to add fields to my org"
+      ],
+      "writes": true,
+      "steps": [
+        "PHASE 1: INITIAL SETUP (Steps 1-4)",
+        "PHASE 2: ANALYSIS AND VALIDATION (Steps 5-11)",
+        "PHASE 3: ENVIRONMENT CONFIGURATION (Steps 12-14)",
+        "PHASE 4: DEPLOYMENT (Steps 15-18)"
+      ],
+      "language": "bi",
+      "version": "1.0.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-crm-salesforce-flow-builder",
+      "area": "delivery",
+      "type": "builder",
+      "one_liner": "Genera nombres estandarizados para Salesforce Flows y sus elementos internos siguiendo las convenciones de ProContacto.",
+      "connectors": [
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [],
+      "writes": false,
+      "steps": [],
+      "language": "es",
+      "version": "2.1.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-crm-salesforce-lwc-builder",
+      "area": "delivery",
+      "type": "builder",
+      "one_liner": "Generates production-ready Lightning Web Components and Apex code following ProContacto's layered architecture (Controller → Service → DAO → Model/DTO → Handler → Wrapper) with full ApexDoc documentation, SLDS theming via CSS custom propert",
+      "connectors": [
+        "google-drive",
+        "salesforce"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "make me a component",
+        "add a feature to the record page"
+      ],
+      "writes": true,
+      "steps": [],
+      "language": "es",
+      "version": null,
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-crm-salesforce-perm-architect",
+      "area": "delivery",
+      "type": "utility",
+      "one_liner": "Diseña arquitecturas integrales de permisos Salesforce desde el modelo de negocio.",
+      "connectors": [
+        "salesforce"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [],
+      "writes": true,
+      "steps": [
+        "Paso 1 — Captura del contexto",
+        "Paso 2 — Análisis de roles y responsabilidades",
+        "Paso 3 — Sensibilidad y compartimentalización de datos",
+        "Paso 4 — Flujos de datos y ciclos de vida",
+        "Paso 5 — Topología Salesforce actual (si aplica)",
+        "Paso 6 — Análisis & Recomendaciones (GENERADOR)",
+        "Paso 7 — Validación y refinamiento",
+        "Paso 8 — Generación de artefactos",
+        "Paso 9 — Resumen final y siguiente paso"
+      ],
+      "language": "es",
+      "version": null,
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-crm-salesforce-user-creator",
+      "area": "delivery",
+      "type": "creator",
+      "one_liner": "Guides Salesforce admins through bulk user creation from spreadsheets (.xlsx, .csv), images/screenshots, or manually dictated lists.",
+      "connectors": [
+        "gmail",
+        "salesforce"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "I have a list of users to create",
+        "need to add users to my org"
+      ],
+      "writes": true,
+      "steps": [
+        "PHASE 1: INPUT PARSING (Step 1)",
+        "PHASE 2: ENVIRONMENT & CONFIGURATION (Steps 2-5)",
+        "PHASE 3: USER SETTINGS & PERMISSIONS (Steps 6-8)",
+        "PHASE 4: VALIDATION (Steps 9-11)",
+        "PHASE 5: DEPLOYMENT (Steps 12-14)"
+      ],
+      "language": "bi",
+      "version": null,
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-crm-salesforce-wireframe-builder",
+      "area": "delivery",
+      "type": "builder",
+      "one_liner": "Genera un SET completo de wireframes navegables de Salesforce Lightning Experience (Desktop 1280px + Salesforce Mobile) a partir de Historias de Usuario, como set HTML SLDS navegable publicado en el gestor de artefactos, o prompt para Claud",
+      "connectors": [
+        "confluence",
+        "gmail",
+        "google-drive",
+        "jira",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "ármame los wireframes",
+        "mockups del proyecto",
+        "pantallas a partir de las HUs",
+        "wireframes navegables",
+        "maquetas de las historias",
+        "build wireframes from user stories"
+      ],
+      "writes": true,
+      "steps": [
+        "Paso 0 — Leer la fuente de HUs y clasificar el proyecto",
+        "Paso 1 — Historias descartadas para diseño (genera esta sección primero)",
+        "Paso 2 — Inventario de Wireframes con reutilización (genera esta sección segundo)",
+        "Paso 2.9 — Confirmar la carpeta de Drive (antes de materializar)",
+        "Paso 3 — Materializar el set (HTML SLDS, default)",
+        "Paso 3.5 — Publicar el set en el gestor (antes de entregar)",
+        "Paso 4 — Entregar el link y subirlo a Drive",
+        "Paso 4.5 — Ofrecer corregir o exportar",
+        "Paso 5 — Opción Claude Design (última opción, en retiro)"
+      ],
+      "language": "bi",
+      "version": "1.9.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-crm-userstory-generator",
+      "area": "delivery",
+      "type": "generator",
+      "one_liner": "Redacta Historias de Usuario (HU) para cualquier proyecto Salesforce que NO sea Consumer Goods Cloud (Sales Cloud, Service Cloud, Experience Cloud, Field Service, CRM custom).",
+      "connectors": [
+        "confluence",
+        "figma",
+        "gmail",
+        "google-calendar",
+        "google-drive",
+        "jira",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "armar HU",
+        "redacta la historia",
+        "User Stories Salesforce",
+        "criterios de aceptación",
+        "acceptance criteria",
+        "Gherkin"
+      ],
+      "writes": true,
+      "steps": [],
+      "language": "bi",
+      "version": "1.3.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-delivery-atlas-client-creator",
+      "area": "delivery",
+      "type": "creator",
+      "one_liner": "Crea el Atlas de un cliente nuevo a partir de Salesforce: lee la Account, sus Contracts y las Opportunities de cada contrato, y arma la estructura cuenta → contratos → proyectos con los productos vendidos, dejando todas las perspectivas en",
+      "connectors": [
+        "bitbucket",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "declared",
+      "when_to_use": [
+        "crea el Atlas de este cliente",
+        "abre el Atlas de la cuenta X",
+        "suma el contrato nuevo al Atlas",
+        "agrega el proyecto al Atlas del cliente",
+        "da de alta el Atlas de esta cuenta"
+      ],
+      "writes": true,
+      "steps": [
+        "Identifica la cuenta en Salesforce (por nombre o sfAccountId). Si hay varias parecidas,",
+        "Verifica si el Atlas ya existe en el store (clientes/<slug>/atlas.json). Si existe, pasa",
+        "Arma la ficha del cliente: nombre, industria, país, sfAccountId, orgs de Salesforce y",
+        "Lee los Contracts de la cuenta: número, sfContractId, vigencia, monto, fecha de firma y",
+        "Arma los proyectos de cada contrato desde las Opportunities asociadas",
+        "Deja todo en blanco con modo blank: sin alcance, sin gaps, sin plan. El Atlas se abre",
+        "Delega en pc-delivery-atlas-version-manager para validar, versionar y publicar.",
+        "Devuelve los pedidos: qué datos del cliente faltan y a quién pedírselos, en borradores"
+      ],
+      "language": "es",
+      "version": "1.0.0",
+      "deployed": false,
+      "help_quality": "rich"
+    },
+    {
+      "name": "pc-delivery-atlas-deliverable-tracker",
+      "area": "delivery",
+      "type": "tracker",
+      "one_liner": "Registra y controla los documentos obligatorios de la metodología dentro del Atlas del cliente: qué entregable corresponde a cada fase, cuál es su template oficial en Drive, si ya está registrado como issue Artifact en Jira y si el propio A",
+      "connectors": [
+        "atlassian",
+        "bitbucket",
+        "googledrive",
+        "slack"
+      ],
+      "connectors_source": "declared",
+      "when_to_use": [
+        "qué entregables faltan",
+        "registra el acta en Jira",
+        "qué documentos necesito para el gate",
+        "cuál es el template del scope freeze",
+        "está todo listo para el freeze"
+      ],
+      "writes": false,
+      "steps": [
+        "Carga el catálogo de documentos obligatorios de la metodología desde la carpeta oficial de",
+        "Marca qué cubre el Atlas: los entregables que se derivan del propio documento (el Acuerdo",
+        "Cruza con Jira: qué entregables ya tienen su issue Artifact y en qué estado. Los que no,",
+        "Verifica los gates: antes de un hito (handoff, Scope Freeze, go-live), devuelve qué papeles",
+        "Devuelve el pedido para que el agente lo mande: qué falta, de quién depende y para cuándo.",
+        "Delega la publicación en pc-delivery-atlas-version-manager."
+      ],
+      "language": "es",
+      "version": "1.0.0",
+      "deployed": false,
+      "help_quality": "rich"
+    },
+    {
+      "name": "pc-delivery-atlas-experience-builder",
+      "area": "delivery",
+      "type": "builder",
+      "one_liner": "Diseña la experiencia conversacional y de marketing en el Atlas del cliente: los topics del agente (Agentforce o voz) con sus diálogos de ejemplo, actions, guardrails y el set de utterances de prueba; y del lado de marketing el customer jou",
+      "connectors": [
+        "bitbucket",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "declared",
+      "when_to_use": [
+        "define los topics del agente",
+        "carga los guardrails",
+        "arma las utterances de prueba",
+        "diseña la campaña de bienvenida",
+        "actualiza el customer journey",
+        "qué etapas del journey no tienen campaña"
+      ],
+      "writes": true,
+      "steps": [
+        "Conversaciones: por cada topic vendido, el alcance en una línea, 2-3 diálogos de ejemplo,",
+        "Guardrails: qué no puede hacer el agente (precios, fechas, datos de otras cuentas) y cuándo",
+        "Customer journey: las etapas del ciclo de vida del cliente final con sus puntos de",
+        "Campañas: cada campaña vendida con audiencia, disparador de entrada, criterio de salida,",
+        "Marca lo no vendido: una etapa del journey sin campaña queda con campaign: null y se",
+        "Delega la publicación en pc-delivery-atlas-version-manager."
+      ],
+      "language": "es",
+      "version": "1.0.0",
+      "deployed": false,
+      "help_quality": "rich"
+    },
+    {
+      "name": "pc-delivery-atlas-gap-tracker",
+      "area": "delivery",
+      "type": "tracker",
+      "one_liner": "Registra y persigue las definiciones pendientes del Atlas de un cliente: detecta los gaps abiertos y los entregables sin registrar, identifica a quién le toca definir cada uno usando el organigrama, arma el pedido en lenguaje llano y prepar",
+      "connectors": [
+        "bitbucket",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "declared",
+      "when_to_use": [
+        "qué falta definir en el Atlas",
+        "persigue los pendientes",
+        "manda los recordatorios del GAP",
+        "quién debe definir el mapeo de SAP",
+        "registra esta respuesta en el Atlas",
+        "cuántos días faltan para el freeze"
+      ],
+      "writes": true,
+      "steps": [
+        "Lee el Atlas del cliente y arma la lista de pendientes: gaps con estado abierto o",
+        "Prioriza por tres criterios, en orden: (a) clase: alcance primero — son los que bloquean",
+        "Resuelve el destinatario con gaps[].defineBy contra org.people: nombre, rol en el",
+        "Redacta el pedido en lenguaje llano, sin jerga: qué se necesita decidir, por qué está",
+        "Devuelve los borradores para que el agente los mande por Slack. Este skill no envía nada.",
+        "Registra la respuesta cuando el agente se la trae: completa el dato en la perspectiva que",
+        "Delega en pc-delivery-atlas-version-manager para validar, versionar y publicar."
+      ],
+      "language": "es",
+      "version": "1.0.0",
+      "deployed": false,
+      "help_quality": "rich"
+    },
+    {
+      "name": "pc-delivery-atlas-integration-architect",
+      "area": "delivery",
+      "type": "utility",
+      "one_liner": "Diseña las integraciones del proyecto dentro del Atlas del cliente: los sistemas y ambientes con sus URLs base, la autenticación y la Named Credential, y por cada flujo su secuencia paso a paso con camino de error, los endpoints que consume",
+      "connectors": [
+        "bitbucket",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "declared",
+      "when_to_use": [
+        "define la integración con SAP",
+        "carga los endpoints",
+        "arma el mapeo campo a campo",
+        "qué ambiente y credenciales faltan",
+        "registra la colección de Postman",
+        "documenta el manejo de errores"
+      ],
+      "writes": true,
+      "steps": [
+        "Parte del alcance: qué integraciones se vendieron y con qué tope (entidades, campos por",
+        "Declara sistemas y ambientes: URL base por ambiente, si está disponible o pendiente del",
+        "Declara la autenticación: método, URL de token, scopes, dónde vive el secreto y la",
+        "Arma un caso por flujo: entidad, dirección, frecuencia, y su secuencia (participantes,",
+        "Lista los endpoints que consume cada flujo: método, path, qué trae o envía, parámetros y",
+        "Mapea campo a campo: un mapeo por par objeto Salesforce ↔ objeto externo (un objeto puede",
+        "Registra la colección de Postman con sus environments: es el contrato ejecutable del",
+        "Delega la publicación en pc-delivery-atlas-version-manager."
+      ],
+      "language": "es",
+      "version": "1.0.0",
+      "deployed": false,
+      "help_quality": "rich"
+    },
+    {
+      "name": "pc-delivery-atlas-plan-manager",
+      "area": "delivery",
+      "type": "manager",
+      "one_liner": "Construye y mantiene el plan de un proyecto dentro del Atlas del cliente: etapas, sprints y tareas con dependencias y responsables, releases, hitos de firma como el Scope Freeze y el Go-Live, y el checklist de pasaje a producción.",
+      "connectors": [
+        "atlassian",
+        "bitbucket",
+        "slack"
+      ],
+      "connectors_source": "declared",
+      "when_to_use": [
+        "arma el plan del proyecto",
+        "agrega las tareas del sprint",
+        "cuándo es el Scope Freeze",
+        "marca esta tarea como terminada",
+        "qué tareas dependen de esta",
+        "actualiza el checklist de go-live"
+      ],
+      "writes": false,
+      "steps": [
+        "Arma la estructura: etapas (Sprint 0, construcción, UAT y go-live), y dentro de cada una",
+        "Declara dependencias: una tarea puede depender de otra o de un hito — por eso el",
+        "Define releases e hitos: qué entrega cada release y cuándo, y los hitos de firma (Scope",
+        "Vincula el plan con el GAP: las tareas del Sprint 0 declaran qué gaps cierran, para que el",
+        "Mantiene el checklist de pasaje a producción con responsable por item, incluidos los que",
+        "Actualiza el avance: marca tareas como hechas o en curso, detecta lo que se atrasó y",
+        "Delega la publicación en pc-delivery-atlas-version-manager."
+      ],
+      "language": "es",
+      "version": "1.0.0",
+      "deployed": false,
+      "help_quality": "rich"
+    },
+    {
+      "name": "pc-delivery-atlas-scope-manager",
+      "area": "delivery",
+      "type": "manager",
+      "one_liner": "Registra el alcance de un proyecto en el Atlas del cliente en fase comercial: unidades vendidas con lo que incluye y lo que no, exclusiones explícitas, historias de usuario y —lo más importante— el GAP, es decir todo lo que está en alcance",
+      "connectors": [
+        "bitbucket",
+        "googledrive",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "declared",
+      "when_to_use": [
+        "carga el alcance del proyecto",
+        "define las unidades vendidas",
+        "arma el GAP",
+        "pon el tope de este pendiente",
+        "qué queda fuera del alcance",
+        "preparemos el anexo de la propuesta"
+      ],
+      "writes": true,
+      "steps": [
+        "Toma las fuentes: la Quote sincronizada de la Opportunity (unidades y montos), el",
+        "Declara las unidades vendidas con incluye / excluye por unidad, y las exclusiones",
+        "Clasifica las historias por madurez (completa / parcial / enunciado) y las carga con su",
+        "Arma el GAP en tres capas (references/gap-question-bank.md): lo computado por la",
+        "Le pone tope a cada gap. Sin limite y unidad no lo acepta: pregunta al agente, que a",
+        "Asigna defineBy contra el organigrama, para que el gap-tracker pueda perseguirlo.",
+        "Delega la publicación en pc-delivery-atlas-version-manager."
+      ],
+      "language": "es",
+      "version": "1.0.0",
+      "deployed": false,
+      "help_quality": "rich"
+    },
+    {
+      "name": "pc-delivery-atlas-version-manager",
+      "area": "delivery",
+      "type": "manager",
+      "one_liner": "Valida, versiona y publica el Atlas de un cliente: es su único camino de escritura.",
+      "connectors": [
+        "atlassian",
+        "bitbucket",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "declared",
+      "when_to_use": [
+        "publica el Atlas",
+        "guarda los cambios del Atlas",
+        "valida la coherencia del Atlas",
+        "congela el Anexo C de PRJ-01",
+        "cierra el Scope Freeze",
+        "saca el diff entre versiones del Atlas"
+      ],
+      "writes": true,
+      "steps": [
+        "Recibe del skill que lo llama: el slug del cliente, el spec modificado y la lista de",
+        "Relee el store (references/store-access.md) antes de escribir. Si la versión en el repo",
+        "Valida coherencia con references/coherence-rules.md. Un error bloquea; los avisos se",
+        "Versiona: calcula el bump (MAJOR/MINOR/PATCH según la tabla del store), escribe la entrada",
+        "Renderiza el HTML desde assets/atlas-shell.html: reemplaza solo el bloque",
+        "Publica: commit atlas(<slug>): <resumen> + push al repo procontacto-atlas.",
+        "Registra la trazabilidad (ver mapa de escritura): link del Atlas como ProjectAssetc",
+        "Devuelve el contrato de retorno del núcleo: qué cambió, el estado de coherencia, los"
+      ],
+      "language": "es",
+      "version": "1.0.0",
+      "deployed": false,
+      "help_quality": "rich"
+    },
+    {
+      "name": "pc-delivery-atlas-viewer",
+      "area": "delivery",
+      "type": "viewer",
+      "one_liner": "Muestra el Atlas de un cliente en modo consulta: responde preguntas concretas sobre alcance, pendientes, modelo de datos, integraciones, plan, entregables o interlocutores, y arma resúmenes para compartir en Slack.",
+      "connectors": [
+        "bitbucket",
+        "slack"
+      ],
+      "connectors_source": "declared",
+      "when_to_use": [
+        "qué gaps tiene el Atlas de X",
+        "qué se le vendió a este cliente",
+        "qué aportó el proyecto PRJ-00",
+        "cuándo es el Scope Freeze",
+        "mostrame el estado del Atlas",
+        "guarda este link en el Atlas"
+      ],
+      "writes": false,
+      "steps": [
+        "Ubica el Atlas del cliente en el store y lee el spec completo.",
+        "Interpreta el alcance de la pregunta: si es sobre un proyecto o contrato puntual, filtra",
+        "Responde con datos del spec, citando de dónde salen (perspectiva y, si aplica, versión).",
+        "Arma el resumen para Slack cuando se lo piden: estado del Atlas, pendientes críticos,",
+        "Registra anexos: cuando alguien aporta un documento o link que no encaja en ninguna"
+      ],
+      "language": "es",
+      "version": "1.0.0",
+      "deployed": false,
+      "help_quality": "rich"
+    },
+    {
+      "name": "pc-delivery-bb-commit-reporter",
+      "area": "delivery",
+      "type": "utility",
+      "one_liner": "Genera un reporte visual de commits de Bitbucket para los desarrolladores y administradores Salesforce de ProContacto en la última semana.",
+      "connectors": [
+        "bitbucket",
+        "gmail",
+        "google-calendar",
+        "jira",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "Salesforce Developer",
+        "Salesforce Administrator",
+        "reporte de commits",
+        "cuántos commits hizo el equipo",
+        "actividad de devs en Bitbucket",
+        "commits de la última semana"
+      ],
+      "writes": true,
+      "steps": [
+        "Paso 1 — Obtener usuarios de Salesforce",
+        "Paso 2 — Listar repositorios activos",
+        "Paso 3 — Obtener commits de la última semana",
+        "Paso 4 — Agregar datos con Python",
+        "Paso 5 — Renderizar el widget"
+      ],
+      "language": "es",
+      "version": null,
+      "deployed": false,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-delivery-blueprint-guide",
+      "area": "delivery",
+      "type": "guide",
+      "one_liner": "Guía consultiva de la metodología ProContacto Blueprint (AI-Delivery) para PMs y Delivery Managers: 3 etapas, 5 fases, 4 gates, Sprint 0 con 10 entregables, 12 limitantes al cliente y control de cambios.",
+      "connectors": [
+        "confluence",
+        "gmail",
+        "google-calendar",
+        "google-drive",
+        "jira",
+        "readai",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "qué sigue en mi proyecto",
+        "en qué fase estoy",
+        "checklist del gate",
+        "qué necesito para el scope freeze",
+        "entregables del sprint 0",
+        "blueprint"
+      ],
+      "writes": true,
+      "steps": [],
+      "language": "bi",
+      "version": "1.1.1",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-delivery-deliverable-orchestrator",
+      "area": "delivery",
+      "type": "orchestrator",
+      "one_liner": "Organiza el espacio de trabajo de un proyecto de delivery: crea las subcarpetas en la carpeta Drive del proyecto (por fases del proceso), traza los artefactos visuales (AS-IS, TO-BE, Wireframes v2, ERD, arquitectura de integraciones) que se",
+      "connectors": [
+        "google-drive",
+        "jira",
+        "salesforce"
+      ],
+      "connectors_source": "requiere-line",
+      "when_to_use": [
+        "organiza las carpetas del proyecto",
+        "arma la estructura de Drive",
+        "crea los artefactos en Jira",
+        "scaffolding del proyecto",
+        "deja lista la estructura de entregables",
+        "organize the project folders/artifacts"
+      ],
+      "writes": true,
+      "steps": [
+        "PASO 0 — Pre-flight de conectores",
+        "PASO 1 — Resolver el proyecto (desde Projectc)",
+        "PASO 2 — Estructura de Drive",
+        "PASO 3 — Artefactos visuales (Cowork)",
+        "PASO 4 — Issues Artifact en Jira (uno por entregable)",
+        "PASO 5 — Registro en Salesforce (limitado)",
+        "PASO 6 — Resumen final"
+      ],
+      "language": "bi",
+      "version": "1.2.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-delivery-jira-backlog-builder",
+      "area": "delivery",
+      "type": "builder",
+      "one_liner": "Construye el backlog de un proyecto en Jira ProContacto a partir del alcance: desde un SOW/Doc de Drive, una Quote/Opportunity de Salesforce, un transcript o un Epic a desglosar → propone una estructura Epics → Stories → Sub-tasks con Como/",
+      "connectors": [
+        "confluence",
+        "gmail",
+        "google-calendar",
+        "google-drive",
+        "jira",
+        "readai",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "arma el backlog",
+        "pasa el SOW a Jira",
+        "desglosa este Epic en historias",
+        "crea las historias del proyecto",
+        "carga el backlog desde la Quote",
+        "build the backlog"
+      ],
+      "writes": true,
+      "steps": [
+        "PASO 0 — Preflight + identidad",
+        "PASO 1 — Fuente del alcance (la da el PM)",
+        "PASO 2 — Proyecto destino + anclaje",
+        "PASO 3 — Generar el árbol propuesto",
+        "PASO 3.5 — Recomendaciones + oferta de contexto (OPT-IN)",
+        "PASO 4 — Dedup + revisión del árbol (widget, gate)",
+        "PASO 5 — Crear en batch (delegando al núcleo)",
+        "PASO 6 — Verificar + reportar",
+        "PASO 7 — Handoff"
+      ],
+      "language": "bi",
+      "version": "0.2.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-delivery-jira-issue-builder",
+      "area": "delivery",
+      "type": "builder",
+      "one_liner": "Crea y edita issues en Jira ProContacto respetando el issuetype y sus required/custom fields reales (Story, Task, Sub-task, Bug, Story Bug, Epic, Artifact, Change Control, Acceptance Certificate, etc.); linkea, comenta y transiciona de a un",
+      "connectors": [
+        "confluence",
+        "gmail",
+        "google-calendar",
+        "google-drive",
+        "jira",
+        "readai",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "crea un issue",
+        "carga una historia/tarea/bug en Jira",
+        "edita el issue PROJ-123",
+        "linkea estos issues",
+        "comenta en el ticket",
+        "cambia el estado de"
+      ],
+      "writes": true,
+      "steps": [
+        "PASO 0 — Preflight de conectores e identidad",
+        "PASO 1 — Intención y proyecto",
+        "PASO 1.5 — Recomendaciones + oferta de contexto (OPT-IN, sin barrido por defecto)",
+        "PASO 2 — Resolver issuetype + su esquema de fields",
+        "PASO 3 — Juntar los datos del issue",
+        "PASO 4 — Revisión y confirmación (widget, gate pre-write)",
+        "PASO 5 — Ejecutar la escritura",
+        "PASO 6 — Verificación post-write y reporte",
+        "PASO 7 — Handoff (opcional)"
+      ],
+      "language": "bi",
+      "version": "0.3.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-delivery-jira-pending-tracker",
+      "area": "delivery",
+      "type": "tracker",
+      "one_liner": "Extrae pendientes del cliente desde emails, transcripts (Google Meet, Read.ai), Google Docs y Confluence, y los crea/actualiza como issues tipo \"External pending\" en el proyecto Jira que elija el Project Manager.",
+      "connectors": [
+        "confluence",
+        "gmail",
+        "jira",
+        "salesforce"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "External pending",
+        "cargar pendientes del cliente",
+        "extraer compromisos",
+        "armar los externals",
+        "pasar pendientes a Jira",
+        "sincronizar pendientes"
+      ],
+      "writes": true,
+      "steps": [
+        "PASO 0 — Validar conectores y usuario",
+        "PASO 1 — Recolectar contexto del PM (obligatorio)",
+        "PASO 2 — Recolectar fuentes",
+        "PASO 3 — Extraer pendings (externos) del texto recolectado",
+        "PASO 4 — Buscar issues existentes + deduplicar",
+        "PASO 5 — Revisar con el PM (artifact editable)",
+        "PASO 6 — Detectar pendings vencidos y ofrecer follow-up",
+        "PASO 7 — Ejecutar crear / update en Jira"
+      ],
+      "language": "bi",
+      "version": null,
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-delivery-jira-project-auditor",
+      "area": "delivery",
+      "type": "auditor",
+      "one_liner": "Audita la higiene de un proyecto Jira y propone fixes en batch para Project Managers y Scrum Masters: issues sin asignar, vencidas, sin fecha, bloqueadas, sin release, y artefactos huérfanos (issue type Artefacto sin URL válida a Google Dri",
+      "connectors": [
+        "confluence",
+        "figma",
+        "gmail",
+        "google-calendar",
+        "google-drive",
+        "jira",
+        "readai",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "auditar el proyecto",
+        "revisar la higiene del proyecto",
+        "qué issues están sin asignar",
+        "issues vencidas",
+        "issues sin fecha",
+        "qué artefactos faltan"
+      ],
+      "writes": true,
+      "steps": [
+        "PASO 0 — Validar conectores y usuario",
+        "PASO 1 — Elegir PM, proyecto y scope (3 sub-steps)",
+        "PASO 1.1 — Elegir líder de proyecto",
+        "PASO 1.2 — Elegir proyecto del PM",
+        "PASO 1.3 — Scope y categorías",
+        "PASO 2 — Diagnóstico (read-only)",
+        "PASO 3 — Armar propuestas de fix",
+        "PASO 4 — Ejecutar el batch"
+      ],
+      "language": "bi",
+      "version": "1.13.3",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-delivery-jira-release-manager",
+      "area": "delivery",
+      "type": "manager",
+      "one_liner": "Gestiona las releases (fixVersions) de un proyecto en Jira ProContacto: crea versiones, les asigna issues, arma release notes/changelog y las marca como released.",
+      "connectors": [
+        "confluence",
+        "google-drive",
+        "jira",
+        "salesforce"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "crea la release",
+        "arma la versión",
+        "asigna estos issues a la versión",
+        "marca la release como liberada",
+        "genera las release notes",
+        "qué entra en la próxima release"
+      ],
+      "writes": true,
+      "steps": [
+        "PASO 0 — Preflight + identidad.",
+        "PASO 1 — Proyecto + intención",
+        "PASO 2 — Armar propuesta + recomendaciones (sin conectores)",
+        "PASO 3 — Oferta de contexto (OPT-IN)",
+        "PASO 4 — Revisión (widget, gate)",
+        "PASO 5 — Ejecutar",
+        "PASO 6 — Verificar + reportar (releer versión + issues asignados + link).",
+        "PASO 7 — Handoff: Acceptance Certificate / Checklist Pasaje a Producción (issue-builder/blueprint-guide), weekly status (auditor)."
+      ],
+      "language": "bi",
+      "version": "0.2.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-delivery-jira-sprint-manager",
+      "area": "delivery",
+      "type": "manager",
+      "one_liner": "Gestiona los sprints de un proyecto en Jira ProContacto vía la Agile API: crea sprints, los inicia y cierra, mueve issues dentro/fuera del sprint y ayuda a planificar la capacity.",
+      "connectors": [
+        "google-calendar",
+        "google-drive",
+        "jira",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "arma el sprint",
+        "planifica el próximo sprint",
+        "inicia/cierra el sprint",
+        "meté estas historias al sprint",
+        "cuánto entra en el sprint",
+        "capacity del equipo"
+      ],
+      "writes": true,
+      "steps": [
+        "PASO 0 — Preflight + identidad (igual a issue-builder).",
+        "PASO 1 — Proyecto + board",
+        "PASO 2 — Intención",
+        "PASO 3 — Armar la propuesta + recomendaciones (sin conectores)",
+        "PASO 3.5 — Oferta de contexto (OPT-IN)",
+        "PASO 4 — Revisión (widget, gate)",
+        "PASO 5 — Ejecutar",
+        "PASO 6 — Verificar + reportar (releer sprint + conteo de issues).",
+        "PASO 7 — Handoff: refinar historias (issue-builder), higiene (project-auditor), weekly status (auditor)."
+      ],
+      "language": "bi",
+      "version": "0.2.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-delivery-jira-worklog-tracker",
+      "area": "delivery",
+      "type": "tracker",
+      "one_liner": "Permite cargar horas trabajadas en tickets de Jira directamente desde Claude.",
+      "connectors": [
+        "gmail",
+        "google-calendar",
+        "google-drive",
+        "jira",
+        "salesforce"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "quiero cargar horas",
+        "cargar horas",
+        "registrar horas",
+        "loguear horas",
+        "cargar tiempo",
+        "registrar tiempo trabajado"
+      ],
+      "writes": true,
+      "steps": [
+        "PASO 0 — Validar conectores y resolver identidad del usuario (obligatorio)",
+        "PASO 1 — Preguntar el período",
+        "PASO 2 — Consultar Google Calendar (obligatorio)",
+        "PASO 3 — Preguntar en qué proyectos cargar",
+        "PASO 4 — Buscar tickets en Jira",
+        "PASO 5 — Renderizar el artefacto",
+        "PASO 6 — El artefacto opera de forma autónoma"
+      ],
+      "language": "es",
+      "version": null,
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-delivery-presentation-builder",
+      "area": "delivery",
+      "type": "builder",
+      "one_liner": "Crea la presentación de DELIVERY de ProContacto **acá mismo**, como artefacto HTML navegable, y desde el chat la exporta a PDF, PowerPoint o imágenes — usa este skill aunque pidan \"PowerPoint\" o \".pptx\": el .pptx sale exportado del mismo de",
+      "connectors": [
+        "confluence",
+        "google-calendar",
+        "google-drive",
+        "jira",
+        "readai",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "PowerPoint",
+        ".pptx",
+        "quiero armar el kickoff",
+        "presentación del proyecto",
+        "presentación de status/weekly status",
+        "steering"
+      ],
+      "writes": true,
+      "steps": [
+        "Paso 0 — Red de seguridad de área",
+        "Paso 1B — Elegir base de delivery",
+        "Paso 1B.2 — Capturar el contexto del proyecto",
+        "Paso 2.5 — Fetch del sitio del cliente (si se proporcionó la web)",
+        "Paso 3 — Enriquecer con conectores (opcional, recomendado)",
+        "Paso 4 — (no aplica personalización por industria)",
+        "Paso 4.7 — Chequeo de completitud (gate bloqueante)",
+        "Paso 4.8 — Confirmar la carpeta de Drive (antes de construir)",
+        "Paso 5 — Construir el deck y subirlo",
+        "Paso 6 — Ofrecer corregir o descargar"
+      ],
+      "language": "bi",
+      "version": "2.2.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-delivery-project-pulse",
+      "area": "delivery",
+      "type": "utility",
+      "one_liner": "Genera un reporte diario del estado de todos los proyectos activos de ProContacto.",
+      "connectors": [
+        "jira",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "pulso de proyectos",
+        "cómo van los proyectos",
+        "dame el estado de los proyectos",
+        "hay movimiento en los proyectos",
+        "qué proyectos están estancados",
+        "status de todos los proyectos"
+      ],
+      "writes": true,
+      "steps": [
+        "Paso 1 — Recolectar datos base",
+        "Paso 1b — Vinculación masiva (si hay proyectos linkeable)",
+        "Paso 2 — Correr queries Jira y calcular métricas agregadas",
+        "Paso 3 — Renderizar el widget",
+        "Paso 4 — Flujo de notificación",
+        "Paso 5 — Flujo de vinculación / agregar tablero"
+      ],
+      "language": "es",
+      "version": "1.0.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-delivery-salesforce-sow-generator",
+      "area": "delivery",
+      "type": "generator",
+      "one_liner": "Genera el Statement of Work Refinado (SOW) de ProContacto para implementaciones Salesforce como Word (.docx) con el template oficial y todas las historias de usuario.",
+      "connectors": [
+        "confluence",
+        "google-drive",
+        "jira",
+        "salesforce"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "clicks before code",
+        "armar el SOW",
+        "SOW refinado/funcional",
+        "documento funcional del proyecto",
+        "alcance de implementación",
+        "convertí este discovery en SOW"
+      ],
+      "writes": true,
+      "steps": [
+        "Fase 1 — Comprensión del negocio",
+        "Fase 2 — Diseño de solución y análisis crítico",
+        "Fase 3 — Validación con el usuario (checkpoint)",
+        "Fase 4 — Redacción del documento",
+        "Fase 5 — Verificación"
+      ],
+      "language": "bi",
+      "version": "1.2.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-delivery-sf-orgcredentials-collector",
+      "area": "delivery",
+      "type": "collector",
+      "one_liner": "Recolecta de los PMs de ProContacto el user y password de las orgs Salesforce de cada proyecto activo y los persiste en Project_Asset__c.",
+      "connectors": [
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "requiere-line",
+      "when_to_use": [
+        "pide las credenciales",
+        "junta los users de los orgs",
+        "recolecta los accesos SF",
+        "credenciales de los proyectos",
+        "necesito los accesos SF",
+        "arma la campaña de credenciales"
+      ],
+      "writes": true,
+      "steps": [
+        "Fase 1 — Discovery",
+        "Fase 2 — Check de respuestas pendientes en Slack",
+        "Fase 3 — State Check (filtrado)",
+        "Fase 4 — Preview y aprobación de Ariel",
+        "Fase 5 — Envío y log",
+        "Fase 6 — Persistir respuestas (auto en Fase 2 + manual on-demand)"
+      ],
+      "language": "bi",
+      "version": null,
+      "deployed": false,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-delivery-sf-project-builder",
+      "area": "delivery",
+      "type": "builder",
+      "one_liner": "Automates the creation of Project_Asset__c records in Salesforce for projects (Project__c) that have Completion_Summary__c = null.",
+      "connectors": [
+        "bitbucket",
+        "confluence",
+        "figma",
+        "gmail",
+        "google-drive",
+        "jira",
+        "odoo",
+        "readai",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [],
+      "writes": true,
+      "steps": [
+        "PHASE 0: Pending Requests Check (run EVERY time this skill is invoked)",
+        "Step 0.1: Find all pending SFProd assets",
+        "Step 0.2: For each project with pending assets, check the Slack project channel for responses",
+        "Step 0.3: If credentials were provided, update the assets",
+        "Step 0.4: Also check for other pending assets",
+        "PHASE 1: Project Analysis (before creating any assets)",
+        "Step 1.0: Preflight — Resolución de Contrato y Proyecto",
+        "Step 1.0b: Verificar sale.subscription en Odoo",
+        "Step 1.1: Load project info",
+        "Step 1.2: Validate project owner"
+      ],
+      "language": "es",
+      "version": "1.4.0",
+      "deployed": false,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-delivery-sf-project-golive-notifier",
+      "area": "delivery",
+      "type": "notifier",
+      "one_liner": "Envía mensajes batch por Slack DM a los PMs (Owners) de ProContacto solicitando o confirmando la fecha de go-live de sus proyectos activos.",
+      "connectors": [
+        "gmail",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "mandar mensajes a los PMs",
+        "pedir fecha de golive",
+        "notificar PMs sobre golive",
+        "batch golive",
+        "comprometer fecha de entrega",
+        "recordatorio de golive"
+      ],
+      "writes": true,
+      "steps": [
+        "Paso 1 — Obtener proyectos activos desde Salesforce",
+        "Paso 2 — Analizar historial de cambios en GoLivec",
+        "Paso 3 — Agrupar por PM y buscar en Slack",
+        "Paso 4 — Armar los mensajes personalizados",
+        "Paso 5 — Mostrar preview completo a Ariel ⚠️",
+        "Paso 6 — Enviar DMs aprobados",
+        "Paso 7 — Reporte final"
+      ],
+      "language": "es",
+      "version": null,
+      "deployed": false,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-delivery-slack-channel-auditor",
+      "area": "delivery",
+      "type": "auditor",
+      "one_liner": "Empuja al PM a postear status en el canal Slack externo del proyecto para mantener informado al comercial de Salesforce (partner seller).",
+      "connectors": [
+        "bitbucket",
+        "gmail",
+        "google-calendar",
+        "jira",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [],
+      "writes": true,
+      "steps": [
+        "Fase 0 — Inputs vía widget",
+        "Fase 1 — Query a Salesforce",
+        "Fase 2 — Para cada proyecto, buscar canal externo",
+        "Fase 2.5 — Leer DM 1:1 caller↔PM (v2.13+, opcional)",
+        "Fase 3A — Onboarding del canal (proyecto sin asset)",
+        "Fase 3B — Auditar canal existente",
+        "Fase 4 — Calcular daysinactive y armar filas",
+        "Fase 5 — Output: widget único mcpvisualizeshowwidget",
+        "Paso 5.1 — Construir el objeto audit",
+        "Paso 5.2 — Render del widget único"
+      ],
+      "language": "bi",
+      "version": "2.16.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-voice-elevenlabs-agent-builder",
+      "area": "delivery",
+      "type": "builder",
+      "one_liner": "Build, configure, and optimize ElevenLabs conversational voice agents via direct HTTP calls to the ElevenLabs REST API (/v1/convai/agents).",
+      "connectors": [],
+      "connectors_source": "none",
+      "when_to_use": [
+        "crea un agente de voz en ElevenLabs",
+        "configura mi agente conversacional",
+        "mejora el prompt de mi bot de voz",
+        "cambia la voz del agente",
+        "build a voice agent"
+      ],
+      "writes": false,
+      "steps": [],
+      "language": "es",
+      "version": "1.1.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-devops-agent-plan-builder",
+      "area": "devops",
+      "type": "builder",
+      "one_liner": "Estandariza la PLANIFICACIÓN de agentes self-hosted de ProContacto antes de construirlos: produce el PLAN funcional (charter) que después consume pc-devops-vertex-agent-builder, sin scaffoldear ni deployar.",
+      "connectors": [
+        "gmail",
+        "google-calendar",
+        "google-drive",
+        "jira",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "quiero planificar un agente",
+        "arma el plan de un agente para X",
+        "qué debería hacer un agente que reemplace el rol Y",
+        "necesito el charter de un agente antes de construirlo",
+        "estandariza la planificación del agente",
+        "plan de agente"
+      ],
+      "writes": true,
+      "steps": [],
+      "language": "es",
+      "version": "1.1.0",
+      "deployed": false,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-devops-salesforce-cicd-guide",
+      "area": "devops",
+      "type": "guide",
+      "one_liner": "Guía paso a paso para Salesforce Devs, Admins y Tech Leads de ProContacto que trabajan repos Bitbucket con CI/CD Salesforce (Confluence 2073329674).",
+      "connectors": [
+        "bitbucket",
+        "confluence",
+        "jira",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "cómo arranco con el repo",
+        "crear rama",
+        "armar el PR",
+        "tengo un hotfix en prod",
+        "back-merge",
+        "rollback"
+      ],
+      "writes": true,
+      "steps": [],
+      "language": "bi",
+      "version": "1.2.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-devops-vertex-agent-builder",
+      "area": "devops",
+      "type": "builder",
+      "one_liner": "Blueprint para crear agentes self-hosted de ProContacto.",
+      "connectors": [
+        "google-drive",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "blueprint",
+        "skill"
+      ],
+      "writes": true,
+      "steps": [
+        "Paso 0 — Preguntas de arranque (definen qué se scaffoldea)",
+        "Paso 1 — Nombre y ubicación del repo del agente",
+        "Paso 2 — Placeholders",
+        "Paso 3 — Setup de recursos propios (checklist)",
+        "Paso 4 — Scaffolding del repo",
+        "Paso 5 — Deploy y verificación"
+      ],
+      "language": "es",
+      "version": "1.2.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-admin-interno-esignature-orchestrator",
+      "area": "legales",
+      "type": "orchestrator",
+      "one_liner": "Orquesta solicitudes de firma electrónica de Google Docs y trackea cada firma en un artifact por documento.",
+      "connectors": [
+        "docusign",
+        "gmail",
+        "google-drive",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "solicita firma de este documento",
+        "manda a firmar a todos",
+        "arma la ronda de firmas",
+        "trackear quién firmó X",
+        "necesito que firmen este policy",
+        "campaña de firma electrónica"
+      ],
+      "writes": true,
+      "steps": [],
+      "language": "bi",
+      "version": "0.4.2",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-legal-sf-contract-validator",
+      "area": "legales",
+      "type": "validator",
+      "one_liner": "Valida en Salesforce la completitud de un Contract antes de que legales lo dé por listo — mayormente lectura; su única escritura es vincular el envelope de DocuSign al contrato, con confirmación.",
+      "connectors": [
+        "docusign",
+        "google-drive",
+        "odoo",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "revisa el contrato de X",
+        "valida la completitud del contrato",
+        "está completo el contrato para firmar",
+        "qué le falta al contrato",
+        "check contract completeness",
+        "review contract in SF"
+      ],
+      "writes": true,
+      "steps": [
+        "Paso 0 — Elegir el Contract a revisar (vista de selección)",
+        "Paso 1 — Armar el conjunto del deal (una sola pasada de lecturas)",
+        "Paso 2 — Correr el checklist de completitud",
+        "Paso 2-bis — Match historias del SOW ↔ QuoteLineItem (lectura de Drive)",
+        "Paso 3 — Score de completitud",
+        "Paso 4 — Mostrar el panel (read-only) y ofrecer derivar",
+        "Paso 5 — Cierre en chat (corto)",
+        "Paso 6 — Enviar el veredicto al owner del contrato (opcional, con confirmación)",
+        "Paso 7 — Vincular el envelope de DocuSign al Contract (única escritura, con confirmación)"
+      ],
+      "language": "bi",
+      "version": "1.3.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-marketing-salesforce-success-case-generator",
+      "area": "marketing",
+      "type": "generator",
+      "one_liner": "Genera casos de éxito de ProContacto para pitch y difusión, en dos modos.",
+      "connectors": [
+        "google-drive",
+        "readai",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "casos de éxito en [industria]",
+        "arma el caso de éxito de [cliente]",
+        "qué implementamos en [cuenta]",
+        "caso de éxito desde las capacitaciones",
+        "referencias/case studies para pitch",
+        "success cases"
+      ],
+      "writes": true,
+      "steps": [],
+      "language": "bi",
+      "version": "2.1.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-admin-interno-brand-applier",
+      "area": "meta",
+      "type": "applier",
+      "one_liner": "Aplica el Design System de ProContacto en documentos, artefactos y piezas de comunicación.",
+      "connectors": [
+        "figma",
+        "salesforce"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "marca",
+        "branding",
+        "anclaje",
+        "slogan institucional",
+        "ventaja competitiva",
+        "propuesta de valor"
+      ],
+      "writes": true,
+      "steps": [],
+      "language": "bi",
+      "version": "2.0.1",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-meta-artifact-publisher",
+      "area": "meta",
+      "type": "utility",
+      "one_liner": "Publica en el gestor de artefactos de ProContacto (artifacts.procontacto.com.mx) un entregable HTML que se armó en la conversación sin pasar por un skill productor: lo envuelve como documento completo, aplica el anti-duplicado de dos pasos",
+      "connectors": [
+        "artifacts-procontacto",
+        "jira",
+        "salesforce"
+      ],
+      "connectors_source": "declared",
+      "when_to_use": [
+        "publica esto",
+        "súbelo al gestor",
+        "dame el link del entregable",
+        "publica una versión nueva",
+        "esto quedó como artefacto de la conversación",
+        "publish this artifact"
+      ],
+      "writes": true,
+      "steps": [
+        "Decide si es un entregable o una pantalla de trabajo. Si es pantalla, el skill no aplica y te lo dice.",
+        "Arma el título canónico {Cliente} · {Entregable} · {Tipo} y te lo muestra.",
+        "Busca el entregable en el gestor (listarartefactos) antes de publicar nada.",
+        "Envuelve el HTML como documento completo con el template de assets/.",
+        "Publica: versión nueva sobre la misma URL si ya existía, artefacto nuevo si no.",
+        "Te da el link en el chat y ofrece cómo compartirlo.",
+        "Ofrece vincularlo al deal o al proyecto, siempre con tu OK."
+      ],
+      "language": "bi",
+      "version": "1.0.0",
+      "deployed": true,
+      "help_quality": "rich"
+    },
+    {
+      "name": "pc-meta-briefing-generator",
+      "area": "meta",
+      "type": "generator",
+      "one_liner": "Genera el briefing diario del usuario como un Claude artifact (React/JSX).",
+      "connectors": [
+        "gmail",
+        "google-calendar",
+        "google-drive",
+        "jira",
+        "readai",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [],
+      "writes": true,
+      "steps": [
+        "PASO 0 — Validar conectores (obligatorio, solo validación — sin recopilar datos todavía)",
+        "PASO 1 — Recopilar datos (en paralelo, usando solo los conectores activos)",
+        "PASO 2 — Construir el objeto BRIEFINGDATA",
+        "PASO 3 — Renderizar el artefacto"
+      ],
+      "language": "es",
+      "version": null,
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-meta-conversation-to-slidedeck",
+      "area": "meta",
+      "type": "utility",
+      "one_liner": "Convierte la conversación actual en un prompt estructurado listo para pegar en Claude Design y generar una presentación en modalidad slide deck.",
+      "connectors": [
+        "jira",
+        "salesforce"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "ármame una presentación de esto",
+        "convertí esta conversación en slides",
+        "genera un prompt para Claude Design",
+        "quiero un deck de esta conversación",
+        "haz una presentación con lo que hablamos",
+        "pasa esto a slides"
+      ],
+      "writes": true,
+      "steps": [
+        "Paso 1 — Leer la conversación",
+        "Paso 2 — Analizar y extraer el contenido",
+        "Paso 3 — Mostrar widget con opciones",
+        "Paso 4 — Generar el prompt para Claude Design",
+        "Paso 5 — Entregar el prompt"
+      ],
+      "language": "bi",
+      "version": "1.1.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-meta-cowork-helprequest-orchestrator",
+      "area": "meta",
+      "type": "orchestrator",
+      "one_liner": "Cuando un colaborador de ProContacto queda trabado por algo de Cowork/Claude (connector, skill, plugin, entorno, permisos), este skill arma un mensaje con el contexto del problema y lo envía en paralelo al canal `#05-ayuda` y por DM a Ariel",
+      "connectors": [
+        "slack"
+      ],
+      "connectors_source": "requiere-line",
+      "when_to_use": [
+        "not connected",
+        "tool not found",
+        "connecting",
+        "no me funciona X",
+        "está roto",
+        "no puedo acceder"
+      ],
+      "writes": false,
+      "steps": [],
+      "language": "bi",
+      "version": "2.1.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-meta-mermaid-diagram-builder",
+      "area": "meta",
+      "type": "builder",
+      "one_liner": "Genera diagramas técnicos como artefactos interactivos de Cowork usando exclusivamente mermaid (flowchart, sequence, ER, state, class, gantt, C4, mindmap, timeline, journey, architecture y más).",
+      "connectors": [
+        "google-drive",
+        "salesforce"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "un diagrama",
+        "un diagrama de X",
+        "hacé/armá un diagrama",
+        "diagrama de flujo/proceso/secuencia/estados/ERD",
+        "diagrama de arquitectura o integraciones",
+        "quiero visualizar este proceso"
+      ],
+      "writes": true,
+      "steps": [
+        "Paso 0 — Desambiguación al inicio (Q04)",
+        "Paso 1 — Mostrar el selector de tipo (Q05)",
+        "Paso 2 — Capturar el contenido",
+        "Paso 3 — Generar el código mermaid",
+        "Paso 4 — Publicar el artefacto interactivo (Q01)",
+        "Paso 5 — Prueba de humo de interactividad (Q08)"
+      ],
+      "language": "bi",
+      "version": "1.4.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-meta-presentation-builder",
+      "area": "meta",
+      "type": "builder",
+      "one_liner": "Punto de entrada ÚNICO y OBLIGATORIO para armar CUALQUIER presentación, deck, propuesta, slides, PPT o pitch de ProContacto — úsalo aunque el usuario diga \"PowerPoint\", \".pptx\" o \"en PPT\": el deck se construye acá como artefacto HTML y el .",
+      "connectors": [
+        "google-drive",
+        "salesforce"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "PowerPoint",
+        ".pptx",
+        "en PPT",
+        "quiero crear/armar una propuesta o presentación",
+        "propuesta/presentación para la empresa X",
+        "ármame una presentación/deck/slides/PPT/PowerPoint"
+      ],
+      "writes": false,
+      "steps": [
+        "Paso 1 — Preguntar el área (o confirmar la inferida)",
+        "Paso 2 — Derivar al skill especializado (transición invisible)"
+      ],
+      "language": "bi",
+      "version": "1.1.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-meta-skill-explainer",
+      "area": "meta",
+      "type": "utility",
+      "one_liner": "Mostrador de ayuda y ENRUTADOR del catálogo de ProContacto.",
+      "connectors": [
+        "jira",
+        "slack"
+      ],
+      "connectors_source": "declared",
+      "when_to_use": [
+        "cómo funciona X",
+        "qué skills tengo",
+        "qué skills hay para W",
+        "no sé qué skill usar",
+        "por dónde empiezo",
+        "necesito hacer X, ¿hay algo?"
+      ],
+      "writes": true,
+      "steps": [
+        "Modo Rutear (describió un trabajo, no un skill). \"Necesito hacer X\", \"por",
+        "Modo Explicar (nombró un skill). El usuario dijo \"cómo funciona X\" / \"para",
+        "Modo Elegir (no nombró ninguno). El usuario dijo \"explícame mis skills\" /",
+        "Modo Filtrar (pidió por capacidad/conector). \"Qué skills usan Salesforce\","
+      ],
+      "language": "bi",
+      "version": "1.1.0",
+      "deployed": true,
+      "help_quality": "rich"
+    },
+    {
+      "name": "pc-meta-skill-manager",
+      "area": "meta",
+      "type": "manager",
+      "one_liner": "Gobierna el catálogo de skills de ProContacto bajo la convención `pc-[área]-[sistema]-[objeto]-[acción]`.",
+      "connectors": [
+        "gmail",
+        "jira",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "qué nombre le pongo a...",
+        "estoy armando un skill para...",
+        "revisa el catálogo",
+        "qué skills tenemos duplicados",
+        "el nombre de X está mal",
+        "qué skills hay para admins SF"
+      ],
+      "writes": true,
+      "steps": [],
+      "language": "bi",
+      "version": "1.8.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-meta-sow-builder",
+      "area": "meta",
+      "type": "builder",
+      "one_liner": "Punto de entrada ÚNICO para armar CUALQUIER SOW (Statement of Work / documento de alcance) de ProContacto cuando el pedido no deja claro el área.",
+      "connectors": [
+        "google-drive",
+        "salesforce"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "quiero armar un SOW",
+        "ármame el SOW",
+        "Statement of Work",
+        "documento de alcance",
+        "necesito el SOW del proyecto/cliente X",
+        "hagamos el alcance"
+      ],
+      "writes": false,
+      "steps": [
+        "Paso 1 — Preguntar el área (o confirmar la inferida)",
+        "Paso 2 — Derivar al skill especializado (transición invisible)"
+      ],
+      "language": "bi",
+      "version": "1.0.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-admin-interno-performance-evaluator",
+      "area": "rrhh",
+      "type": "utility",
+      "one_liner": "Evalúa el desempeño de un colaborador de ProContacto barriendo todos los conectores (Salesforce, Gmail, Calendar, Slack, Jira, Confluence, Bitbucket, ReadAI) en un período configurable.",
+      "connectors": [
+        "bitbucket",
+        "confluence",
+        "gmail",
+        "google-calendar",
+        "google-drive",
+        "jira",
+        "readai",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "evaluar el desempeño de X",
+        "performance review de X",
+        "reporte de actividad de X",
+        "scoring de X",
+        "revisar métricas de X",
+        "cuánto contribuyó X"
+      ],
+      "writes": true,
+      "steps": [
+        "Fase 1 — Identificar al colaborador y el período",
+        "Fase 2 — Verificar conectores disponibles",
+        "Fase 3 — Barrido de conectores",
+        "Fase 4 — Calcular el scoring",
+        "Fase 5 — Mostrar el dashboard con showwidget",
+        "Fase 6 — Accionables: regularización de actividad shadow"
+      ],
+      "language": "es",
+      "version": null,
+      "deployed": false,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-admin-interno-team-dailycheckin",
+      "area": "rrhh",
+      "type": "utility",
+      "one_liner": "Conversa diariamente (lun-vie) por Slack DM con cada colaborador de ProContacto cuyo manager es un Project Manager.",
+      "connectors": [
+        "bitbucket",
+        "confluence",
+        "figma",
+        "jira",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "manda el check-in",
+        "haz la ronda del equipo",
+        "check-in diario",
+        "team daily",
+        "pregúntales cómo van",
+        "ronda matutina"
+      ],
+      "writes": true,
+      "steps": [
+        "Fase 1 — Discovery del target audience",
+        "Fase 2 — Lectura del thread previo + captura de respuestas",
+        "Fase 3 — (eliminada del flujo automático)",
+        "Fase 4 — Draft de mensajes según modo",
+        "Fase 5 — Widget de aprobación y envío",
+        "Fase 6 — Persistencia para reporting"
+      ],
+      "language": "bi",
+      "version": "1.0.0",
+      "deployed": true,
+      "help_quality": "basic"
+    },
+    {
+      "name": "pc-training-onboarding-guide",
+      "area": "rrhh",
+      "type": "guide",
+      "one_liner": "Guía paso a paso el onboarding a Claude de personas de ProContacto: diferencias entre Chat, Cowork y Code, canal según rol (Code para Developers y SF Admins; Cowork para el resto), cómo ejecutar y descubrir skills, configuración de conector",
+      "connectors": [
+        "bitbucket",
+        "confluence",
+        "gmail",
+        "google-calendar",
+        "google-drive",
+        "jira",
+        "salesforce",
+        "slack"
+      ],
+      "connectors_source": "inferred",
+      "when_to_use": [
+        "quiero aprender a usar Claude",
+        "onboarding Claude",
+        "capacitame en Claude",
+        "soy nuevo en Claude",
+        "cómo configuro mis conectores",
+        "ejecuta el follow-up de adopción"
+      ],
+      "writes": true,
+      "steps": [],
+      "language": "bi",
+      "version": null,
+      "deployed": true,
+      "help_quality": "basic"
+    }
+  ]
+}

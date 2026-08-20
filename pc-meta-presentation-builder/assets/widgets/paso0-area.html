@@ -1,0 +1,24 @@
+<!-- Router — pregunta de área (Patrón A). Widget del skill pc-meta-presentation-builder.
+     Las cards se generan desde el REGISTRY del SKILL.md (una por área): título, descripción,
+     "ideal para" y el sendPrompt que dispara el hand-off al skill especializado. Hoy hay 2 áreas;
+     agregar una nueva = agregar su card acá + su fila en el registry. Pasar tal cual a show_widget. -->
+<h2 class="sr-only">Elegir para qué área es la presentación; la elección deriva al skill especializado</h2>
+<div style="padding:0.5rem 0; font-family:var(--font-sans);">
+  <div style="font-size:12px; color:var(--color-text-tertiary); margin-bottom:6px;">Presentation builder · elige el área</div>
+  <div style="font-size:18px; font-weight:500; color:var(--color-text-primary); margin-bottom:16px;">¿Para qué área es la presentación?</div>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:16px;">
+    <button type="button" onclick="sendPrompt('La presentación es para el área Comercial.')" style="cursor:pointer; text-align:left; border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:20px; background:transparent; display:flex; flex-direction:column; gap:8px;">
+      <i class="ti ti-briefcase" style="font-size:26px; color:var(--color-text-secondary);" aria-hidden="true"></i>
+      <span style="font-size:16px; font-weight:500; color:var(--color-text-primary);">Comercial</span>
+      <span style="font-size:13px; color:var(--color-text-secondary); line-height:1.5;">Propuesta para un cliente externo: oportunidad de venta, POC, soporte, outsourcing, etc.</span>
+      <span style="font-size:12px; color:var(--color-text-tertiary); margin-top:2px;">Ideal cuando hay un deal con oportunidad en Salesforce.</span>
+    </button>
+    <button type="button" onclick="sendPrompt('La presentación es para el área Delivery.')" style="cursor:pointer; text-align:left; border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:20px; background:transparent; display:flex; flex-direction:column; gap:8px;">
+      <i class="ti ti-rocket" style="font-size:26px; color:var(--color-text-secondary);" aria-hidden="true"></i>
+      <span style="font-size:16px; font-weight:500; color:var(--color-text-primary);">Delivery</span>
+      <span style="font-size:13px; color:var(--color-text-secondary); line-height:1.5;">Presentación de un proyecto activo: kickoff, steering, status, cierre, retro.</span>
+      <span style="font-size:12px; color:var(--color-text-tertiary); margin-top:2px;">Ideal para comunicar avance al cliente o al equipo.</span>
+    </button>
+  </div>
+</div>

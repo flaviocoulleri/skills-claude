@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ProContacto Skill Catalog Entry",
+  "description": "Shape canónico de una entrada en el inventario de skills.",
+  "type": "object",
+  "required": ["name", "directory_name", "origin"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+){1,3}$",
+      "description": "Kebab-case. Debe coincidir con directory_name."
+    },
+    "directory_name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+){1,3}$"
+    },
+    "path": {"type": "string"},
+    "description": {"type": "string"},
+    "roles": {
+      "type": "array",
+      "items": {
+        "enum": ["admin-sf", "developer-sf", "developer", "pm", "delivery",
+                 "analyst-data", "architect", "consultant", "end-user", "any"]
+      }
+    },
+    "area": {
+      "enum": ["crm", "cg-cloud", "data-cloud", "marketing-cloud", "integrations",
+              "devops", "data", "delivery", "admin-interno", "meta"]
+    },
+    "object": {"type": "string"},
+    "systems": {
+      "type": "array",
+      "items": {
+        "enum": ["salesforce", "jira", "google-calendar", "gmail", "slack",
+                 "ms-office", "data-warehouse", "github", "sf-cli", "internal"]
+      }
+    },
+    "type": {
+      "enum": ["generator", "creator", "builder", "viewer", "validator",
+              "guide", "workflow", "utility"]
+    },
+    "status": {
+      "enum": ["draft", "beta", "stable", "deprecated"]
+    },
+    "language": {
+      "enum": ["es", "en", "bi", "unknown"]
+    },
+    "owner": {"type": "string"},
+    "dependencies": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "origin": {
+      "enum": ["procontacto", "external"]
+    },
+    "name_conformance": {"type": "boolean"},
+    "name_issue": {"type": "string"}
+  }
+}
