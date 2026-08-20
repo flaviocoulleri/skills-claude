@@ -1,0 +1,14 @@
+<template>
+    <div class="slds-is-relative">
+        <lightning-button
+            variant="brand"
+            label="Descargar PDF"
+            icon-name="utility:download"
+            onclick={handleDownload}
+            disabled={isLoading}
+        ></lightning-button>
+        <template lwc:if={isLoading}>
+            <lightning-spinner alternative-text="Generando PDF" size="small"></lightning-spinner>
+        </template>
+    </div>
+</template>

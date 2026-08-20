@@ -1,0 +1,24 @@
+/**
+ * @description Controller exposing {{CLIENT_NAME}}-branded Quote PDF generation to the LWC layer
+ * @version 1.0.0
+ * @license Proprietary – ProContacto
+ * @author ProContacto
+ */
+public with sharing class QuotePdfController{{SUFFIX}} {
+
+    /**
+     * @description Generates a {{CLIENT_NAME}}-branded PDF representation of a Quote for download from the record page
+     * @param quoteId Id of the Quote to render as PDF
+     * @return QuotePdfResultDTO File name and base64-encoded PDF content
+     */
+    @AuraEnabled
+    public static QuotePdfResultDTO generateQuotePdf(Id quoteId) {
+        try {
+            return QuotePdfService{{SUFFIX}}.generatePdf(quoteId);
+        } catch (Exception e) {
+            AuraHandledException auraException = new AuraHandledException(e.getMessage());
+            auraException.setMessage(e.getMessage());
+            throw auraException;
+        }
+    }
+}

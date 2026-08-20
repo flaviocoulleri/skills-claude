@@ -1,0 +1,41 @@
+/**
+ * @description Business logic for rendering a Quote as a downloadable, {{CLIENT_NAME}}-branded PDF file
+ * @version 1.0.0
+ * @license Proprietary – ProContacto
+ * @author ProContacto
+ */
+public with sharing class QuotePdfService{{SUFFIX}} {
+
+    /**
+     * @description Renders the QuotePdfTemplate{{SUFFIX}} Visualforce page for a Quote and returns the resulting PDF
+     * @param quoteId Id of the Quote to render
+     * @return QuotePdfResultDTO File name and base64-encoded PDF content
+     */
+    public static QuotePdfResultDTO generatePdf(Id quoteId) {
+        List<Quote> quotes = {{DAO_CLASS_NAME}}.getQuotesWithLineItems(new Set<Id>{ quoteId });
+
+        if (quotes.isEmpty()) {
+            throw new QuotePdf{{SUFFIX}}Exception('No se encontró la Quote solicitada.');
+        }
+
+        Quote quoteRecord = quotes[0];
+
+        PageReference pdfPage = Page.QuotePdfTemplate{{SUFFIX}};
+        pdfPage.getParameters().put('id', quoteId);
+
+        Blob pdfBlob;
+        if (Test.isRunningTest()) {
+            pdfBlob = Blob.valueOf('Test PDF content');
+        } else {
+            pdfBlob = pdfPage.getContentAsPDF();
+        }
+
+        String fileName = 'Quote-' + quoteRecord.QuoteNumber + '.pdf';
+        return new QuotePdfResultDTO(fileName, pdfBlob);
+    }
+
+    /**
+     * @description Custom exception used to signal Quote PDF generation failures
+     */
+    public class QuotePdf{{SUFFIX}}Exception extends Exception {}
+}

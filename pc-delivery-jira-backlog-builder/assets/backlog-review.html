@@ -1,0 +1,113 @@
+<!--
+  VISTA — Revisión del backlog propuesto (pc-delivery-jira-backlog-builder, PASO 4).
+  Se pasa como widget_code a mcp__visualize__show_widget.
+
+  El skill reemplaza SOLO el objeto `const TREE = ...` (anclar en esa línea y su marcador de fin,
+  NO en este comentario) con el árbol propuesto:
+    {
+      "projectKey":"ZCLAUDE",
+      "epics":[ { "tmp":"e1","summary":"...","exists":false,
+                  "stories":[ { "tmp":"s1","summary":"...","exists":false,"estimate":"5",
+                                "subtasks":[ {"tmp":"t1","summary":"...","exists":false} ] } ] } ]
+    }
+  `exists:true` = ya está en Jira → viene destildado y con badge (no se duplica).
+  Al confirmar, el widget serializa SOLO los nodos tildados y los manda por sendPrompt.
+  El resto (CSS/JS) es FIJO. Íconos Tabler. Colores: solo tokens. Dark-safe.
+-->
+<div id="pc-jira-backlog">
+  <style>
+    #pc-jira-backlog { padding:1rem 0; font-family:var(--font-sans); color:var(--text-primary); }
+    #pc-jira-backlog .eyebrow { font-size:12px; color:var(--text-muted); margin-bottom:4px; }
+    #pc-jira-backlog .title { font-size:22px; font-weight:500; }
+    #pc-jira-backlog .sub { font-size:13px; color:var(--text-secondary); margin:6px 0 14px; }
+    #pc-jira-backlog .epic { border:1px solid var(--border); border-radius:10px; margin-bottom:12px; overflow:hidden; }
+    #pc-jira-backlog .node { display:flex; gap:9px; align-items:center; padding:8px 12px; }
+    #pc-jira-backlog .epic > .node { background:var(--surface-1); font-weight:600; }
+    #pc-jira-backlog .story { padding-left:30px; border-top:1px solid var(--border); }
+    #pc-jira-backlog .subtask { padding-left:54px; border-top:1px solid var(--border); }
+    #pc-jira-backlog .kind { font-size:10px; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); flex:none; width:58px; }
+    #pc-jira-backlog input[type=text] { flex:1; min-width:0; font-size:13px; font-family:var(--font-sans); color:var(--text-primary); background:var(--surface-2); border:1px solid var(--border-strong); border-radius:6px; padding:6px 9px; }
+    #pc-jira-backlog .est { flex:none; width:52px; text-align:center; }
+    #pc-jira-backlog .badge { flex:none; font-size:10px; background:var(--surface-2); color:var(--text-muted); border:1px solid var(--border); padding:2px 7px; border-radius:999px; }
+    #pc-jira-backlog .actions { display:flex; gap:10px; align-items:center; margin-top:18px; }
+    #pc-jira-backlog .go { border:none; cursor:pointer; background:var(--text-accent); color:var(--surface-2); font-size:14px; font-weight:600; padding:10px 20px; border-radius:8px; display:inline-flex; gap:7px; align-items:center; }
+    #pc-jira-backlog .ctxbtn { border:1px solid var(--border); cursor:pointer; background:transparent; color:var(--text-secondary); font-size:12px; padding:8px 13px; border-radius:8px; display:inline-flex; gap:6px; align-items:center; }
+    #pc-jira-backlog .count { font-size:12px; color:var(--text-muted); margin-left:auto; }
+  </style>
+
+  <div class="eyebrow">Jira · delivery · revisa el backlog antes de crearlo</div>
+  <div class="title">Backlog propuesto</div>
+  <div class="sub">Destilda lo que no quieras crear. Los marcados <b>ya existen</b> vienen apagados para no duplicar. Edita el título o la estimación inline.</div>
+
+  <div id="tree"></div>
+
+  <div class="actions">
+    <button class="go" id="go"><i class="ti ti-check"></i>Crear los seleccionados</button>
+    <button class="ctxbtn" id="ctx"><i class="ti ti-plug-connected"></i>Revisar el contexto del proyecto (conectores)</button>
+    <span class="count" id="count"></span>
+  </div>
+</div>
+<script>
+  const TREE = /*__TREE__*/{
+    "projectKey":"ZCLAUDE",
+    "epics":[
+      {"tmp":"e1","summary":"Gestión de cotizaciones","exists":false,"stories":[
+        {"tmp":"s1","summary":"Cargar la quote desde el banco de historias","exists":false,"estimate":"5","subtasks":[
+          {"tmp":"t1","summary":"Mapear productos del banco a líneas de quote","exists":false}]},
+        {"tmp":"s2","summary":"Sincronizar la quote con la oportunidad","exists":true,"estimate":"3","subtasks":[]}
+      ]}
+    ]
+  }/*__END__*/;
+
+  const treeEl=document.getElementById('tree');
+  const reg=[]; // {node, type, cb, sumEl, estEl}
+
+  function nodeRow(node, type){
+    const row=document.createElement('div'); row.className='node '+type;
+    const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!node.exists;
+    const kind=document.createElement('span'); kind.className='kind'; kind.textContent=type;
+    const sum=document.createElement('input'); sum.type='text'; sum.value=node.summary||'';
+    row.appendChild(cb); row.appendChild(kind); row.appendChild(sum);
+    let estEl=null;
+    if (type==='story'){ estEl=document.createElement('input'); estEl.type='text'; estEl.className='est'; estEl.placeholder='pts'; estEl.value=node.estimate||''; row.appendChild(estEl); }
+    if (node.exists){ const b=document.createElement('span'); b.className='badge'; b.textContent='ya existe'; row.appendChild(b); }
+    reg.push({node, type, cb, sumEl:sum, estEl});
+    cb.addEventListener('change', updateCount);
+    return row;
+  }
+
+  (TREE.epics||[]).forEach(ep=>{
+    const box=document.createElement('div'); box.className='epic';
+    box.appendChild(nodeRow(ep,'epic'));
+    (ep.stories||[]).forEach(st=>{
+      box.appendChild(nodeRow(st,'story'));
+      (st.subtasks||[]).forEach(sb=> box.appendChild(nodeRow(sb,'subtask')));
+    });
+    treeEl.appendChild(box);
+  });
+
+  function updateCount(){
+    const n=reg.filter(r=>r.cb.checked).length;
+    document.getElementById('count').textContent = n+' de '+reg.length+' seleccionados';
+  }
+  updateCount();
+
+  document.getElementById('go').onclick = ()=>{
+    // reconstruir el árbol SOLO con lo tildado, preservando jerarquía por posición
+    const picked = new Set(reg.filter(r=>r.cb.checked).map(r=>r.node.tmp));
+    const val = (r)=> ({tmp:r.node.tmp, summary:r.sumEl.value.trim(), ...(r.estEl?{estimate:r.estEl.value.trim()}:{})});
+    const byTmp = {}; reg.forEach(r=> byTmp[r.node.tmp]=r);
+    const out={projectKey:TREE.projectKey, epics:[]};
+    (TREE.epics||[]).forEach(ep=>{
+      const stories=[];
+      (ep.stories||[]).forEach(st=>{
+        const subs=(st.subtasks||[]).filter(sb=>picked.has(sb.tmp)).map(sb=>val(byTmp[sb.tmp]));
+        if (picked.has(st.tmp)) stories.push({...val(byTmp[st.tmp]), subtasks:subs});
+        else if (subs.length) { /* si el padre no va, los subtasks quedan sin parent -> omitir */ }
+      });
+      if (picked.has(ep.tmp) || stories.length) out.epics.push({...(picked.has(ep.tmp)?val(byTmp[ep.tmp]):{tmp:ep.tmp, summary:ep.summary, existing:true}), stories});
+    });
+    sendPrompt('CONFIRMO: crea el backlog seleccionado en '+TREE.projectKey+'. Árbol final (JSON): '+JSON.stringify(out));
+  };
+  document.getElementById('ctx').onclick = ()=> sendPrompt('revisa el contexto del proyecto '+TREE.projectKey+' con los conectores (SOW/Drive, Quote de Salesforce, transcripts, Slack) para detectar alcance no cubierto o historias duplicadas antes de crear el backlog');
+</script>

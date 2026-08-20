@@ -1,0 +1,50 @@
+/**
+ * @description Controller extension for the QuotePdfTemplate{{SUFFIX}} Visualforce page
+ * @version 1.0.0
+ * @license Proprietary – ProContacto
+ * @author ProContacto
+ */
+public with sharing class QuotePdfPageController{{SUFFIX}} {
+
+    /**
+     * @description Quote being rendered, including its line items
+     */
+    public Quote quoteRecord { get; private set; }
+
+    /**
+     * @description Line items of the Quote, exposed for iteration in the page
+     */
+    public List<QuoteLineItem> lineItems { get; private set; }
+
+    /**
+     * @description Vendor identity (name, address, payment details, logo, product photo) used to brand the PDF
+     */
+    public QuotePdfBrandingConfig{{SUFFIX}} branding { get; private set; }
+
+    /**
+     * @description Loads the Quote referenced by the "id" page parameter
+     * @param stdController Standard controller injected by the page for the Quote record
+     */
+    public QuotePdfPageController{{SUFFIX}}(ApexPages.StandardController stdController) {
+        Id quoteId = (Id) stdController.getId();
+        List<Quote> quotes = {{DAO_CLASS_NAME}}.getQuotesWithLineItems(new Set<Id>{ quoteId });
+        this.quoteRecord = quotes.isEmpty() ? null : quotes[0];
+        this.lineItems = this.quoteRecord == null ? new List<QuoteLineItem>() : this.quoteRecord.QuoteLineItems;
+        this.branding = QuotePdfBrandingConfig{{SUFFIX}}.getDefault();
+    }
+
+    /**
+     * @description Total discount amount across all line items, for display in the totals section
+     * @return Decimal Difference between the sum of list prices and the Quote subtotal
+     */
+    public Decimal getTotalDiscountAmount() {
+        if (quoteRecord == null) {
+            return 0;
+        }
+        Decimal listTotal = 0;
+        for (QuoteLineItem li : lineItems) {
+            listTotal += (li.UnitPrice == null ? 0 : li.UnitPrice) * (li.Quantity == null ? 0 : li.Quantity);
+        }
+        return listTotal - (quoteRecord.Subtotal == null ? 0 : quoteRecord.Subtotal);
+    }
+}

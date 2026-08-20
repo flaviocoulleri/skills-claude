@@ -1,0 +1,286 @@
+<meta charset="utf-8">
+<title>__WF_TITLE__</title>
+<!-- __WF_TRACE__ -->
+<style>
+/* =========================================================================
+   ProContacto — Shell de wireframes
+   Tercer hermano de la familia (deck / documento / wireframe). Un wireframe se
+   revisa: se recorre pantalla por pantalla y se discute punto por punto. Por
+   eso el shell suma dos cosas que el deck no tiene: selector de pantallas y
+   anotaciones numeradas con su leyenda.
+
+   Tokens a reemplazar (cinco, cada uno una sola vez; el comentario los nombra
+   sin guiones bajos para que un reemplazo de texto no se coma esta línea):
+     WF TITLE   → título del set de wireframes
+     WF TRACE   → comentario oculto de trazabilidad
+                   incluye `gestor-id: {id}` una vez publicado el set en el gestor
+     WF CSS     → CSS propio (tipografía de marca + estilos de las pantallas)
+     WF SCREENS → las <section class="wf-screen" data-nombre="…"> …
+     WF NOTAS   → JSON con las anotaciones por pantalla (ver abajo)
+
+   Formato de WF NOTAS:
+     {"0":[{"x":18,"y":32,"t":"El filtro por zona arranca en la del usuario."}]}
+     x / y en % del ancho y alto de la pantalla. La numeración la pone el shell.
+
+   El wireframe es baja fidelidad a propósito: gris, sin color de marca en la
+   interfaz dibujada. El color se reserva para el chrome del visor y para las
+   anotaciones, así nadie confunde el boceto con el diseño final.
+   ========================================================================= */
+:root{
+  --pc-blue:#0062FF; --pc-violet:#8F7AFF;
+  --ui-bg:#14161A; --ui-surface:#1F1F1F; --ui-elev:#26272B;
+  --ui-border:rgba(255,255,255,0.10); --ui-border-strong:rgba(255,255,255,0.18);
+  --ui-fg:#FFFFFF; --ui-fg2:rgba(255,255,255,0.72); --ui-fg3:rgba(255,255,255,0.52);
+  --ui-font:'Open Sans',system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  /* Escala de grises del boceto.
+     `--wf-texto-2` es #5F6673 y no un gris más claro por accesibilidad: a 11-13px
+     los grises tipo #767C86 quedan en 4.2:1 sobre blanco, debajo del mínimo AA de
+     4.5, y justo en las etiquetas que hay que leer durante la revisión. Verificado
+     con scripts/verificar-visual.mjs. */
+  --wf-lienzo:#FFFFFF; --wf-chrome:#F3F4F6; --wf-linea:#D6D9DE; --wf-linea-2:#B9BEC6;
+  --wf-relleno:#EDEFF2; --wf-texto:#3C4149; --wf-texto-2:#5F6673;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--ui-bg)}
+body{font-family:var(--ui-font);color:var(--ui-fg)}
+
+/* ───────── Escenario: la pantalla se dibuja a 1440 y se escala entera ───────── */
+#wf-viewport{position:fixed;inset:0 320px 56px 0;overflow:hidden;background:#0E1013}
+#wf-stage{position:absolute;left:0;top:0;width:1440px;transform-origin:0 0}
+.wf-screen{display:none;width:1440px;background:var(--wf-lienzo);color:var(--wf-texto);
+  position:relative;box-shadow:0 24px 64px rgba(0,0,0,.55)}
+.wf-screen.activa{display:block}
+
+/* ───────── Piezas de boceto reutilizables ───────── */
+.wf-bar{background:var(--wf-chrome);border-bottom:1px solid var(--wf-linea);padding:14px 22px;
+  display:flex;align-items:center;gap:14px}
+.wf-tabs{display:flex;gap:2px;padding:0 22px;background:var(--wf-chrome);border-bottom:1px solid var(--wf-linea)}
+.wf-tab{padding:11px 18px;font-size:13px;color:var(--wf-texto-2);border-bottom:2px solid transparent}
+.wf-tab.sel{color:var(--wf-texto);border-bottom-color:var(--wf-linea-2);font-weight:700;background:var(--wf-lienzo)}
+.wf-box{border:1px solid var(--wf-linea);border-radius:6px;background:var(--wf-lienzo)}
+.wf-fill{background:var(--wf-relleno);border-radius:4px}
+.wf-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--wf-texto-2)}
+.wf-btn{border:1px solid var(--wf-linea-2);border-radius:5px;padding:7px 15px;font-size:13px;
+  color:var(--wf-texto);background:var(--wf-lienzo)}
+.wf-btn.pri{background:var(--wf-texto);color:var(--wf-lienzo);border-color:var(--wf-texto)}
+.wf-tabla{width:100%;border-collapse:collapse;font-size:13px}
+.wf-tabla th{text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--wf-texto-2);padding:9px 14px;border-bottom:1px solid var(--wf-linea-2);background:var(--wf-chrome)}
+.wf-tabla td{padding:11px 14px;border-bottom:1px solid var(--wf-linea);color:var(--wf-texto)}
+
+/* ───────── Anotaciones ───────── */
+.wf-pin{position:absolute;width:26px;height:26px;border-radius:50%;background:var(--pc-blue);
+  color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;
+  border:2px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.35);cursor:pointer;
+  transform:translate(-50%,-50%);z-index:5}
+.wf-pin:hover,.wf-pin.foco{background:var(--pc-violet);transform:translate(-50%,-50%) scale(1.18)}
+body.sin-notas .wf-pin{display:none}
+
+/* ───────── Panel lateral: pantallas + notas ───────── */
+#lado{position:fixed;top:0;right:0;bottom:56px;width:320px;background:var(--ui-surface);
+  border-left:1px solid var(--ui-border);overflow-y:auto;padding:20px 18px 28px}
+#lado h2{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ui-fg3);margin:0 0 12px}
+#lado h2+h2{margin-top:26px}
+.pantalla-item{display:flex;gap:10px;align-items:center;width:100%;text-align:left;padding:9px 11px;
+  border-radius:8px;border:1px solid transparent;background:transparent;color:var(--ui-fg2);
+  font:inherit;font-size:13.5px;cursor:pointer;margin-bottom:3px}
+.pantalla-item:hover{background:var(--ui-elev);color:var(--ui-fg)}
+.pantalla-item.sel{background:rgba(0,98,255,.18);border-color:var(--pc-blue);color:#fff;font-weight:600}
+.pantalla-item .n{font-size:11px;color:var(--ui-fg3);min-width:16px;font-variant-numeric:tabular-nums}
+.nota{display:flex;gap:10px;padding:10px 11px;border-radius:8px;font-size:13px;line-height:1.5;
+  color:var(--ui-fg2);border:1px solid transparent;cursor:pointer;background:transparent;
+  text-align:left;font-family:inherit;width:100%;margin-bottom:4px}
+.nota:hover,.nota.foco{background:var(--ui-elev);border-color:var(--ui-border-strong);color:var(--ui-fg)}
+.nota .b{flex:0 0 20px;height:20px;border-radius:50%;background:var(--pc-blue);color:#fff;
+  font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px}
+#sin-notas{font-size:13px;color:var(--ui-fg3);line-height:1.5}
+
+/* ───────── Barra inferior ───────── */
+#barra{position:fixed;left:0;right:320px;bottom:0;height:56px;background:var(--ui-surface);
+  border-top:1px solid var(--ui-border);display:flex;align-items:center;gap:8px;padding:0 16px;z-index:20}
+button.tb{border:1px solid var(--ui-border);background:var(--ui-elev);color:var(--ui-fg);min-width:32px;
+  height:32px;padding:0 11px;border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px}
+button.tb:hover{border-color:var(--ui-border-strong);background:#2f3035}
+button.tb:focus-visible{outline:2px solid #66A1FF;outline-offset:3px}
+button.tb[aria-pressed="true"]{background:rgba(0,98,255,.28);border-color:var(--pc-blue);color:#EAF1FF;font-weight:700}
+#tit{font-size:13px;color:var(--ui-fg2);margin-right:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#zl{font-size:12px;color:var(--ui-fg3);min-width:44px;text-align:center;font-variant-numeric:tabular-nums}
+
+@media (max-width:900px){
+  #lado{position:static;width:auto;height:auto;border-left:0;border-top:1px solid var(--ui-border)}
+  #wf-viewport{position:relative;inset:auto;height:58vh}
+  #barra{position:static;width:auto;right:auto}
+  html,body{overflow:auto}
+}
+@media print{
+  #lado,#barra{display:none!important}
+  #wf-viewport{position:static;inset:auto;overflow:visible}
+  #wf-stage{transform:none!important;width:1440px}
+  .wf-screen{display:block!important;break-after:page;box-shadow:none;margin-bottom:0}
+}
+</style>
+
+<style id="wf-css">
+/* ═══════════ CSS propio del set de wireframes ═══════════ */
+__WF_CSS__
+</style>
+
+<div id="wf-viewport">
+  <div id="wf-stage">
+__WF_SCREENS__
+  </div>
+</div>
+
+<aside id="lado">
+  <h2>Pantallas</h2>
+  <div id="lista-pantallas"></div>
+  <h2>Anotaciones</h2>
+  <div id="lista-notas"></div>
+  <div id="sin-notas" style="display:none">Esta pantalla todavía no tiene anotaciones.</div>
+</aside>
+
+<div id="barra" role="toolbar" aria-label="Controles del wireframe">
+  <span id="tit"></span>
+  <button class="tb" id="b-prev" title="Pantalla anterior (←)" aria-label="Pantalla anterior">‹</button>
+  <button class="tb" id="b-next" title="Pantalla siguiente (→)" aria-label="Pantalla siguiente">›</button>
+  <button class="tb" id="b-menos" title="Alejar" aria-label="Alejar">−</button>
+  <span id="zl">100%</span>
+  <button class="tb" id="b-mas" title="Acercar" aria-label="Acercar">+</button>
+  <button class="tb" id="b-fit" title="Ajustar a la ventana (F)">Ajustar</button>
+  <button class="tb" id="b-notas" title="Mostrar u ocultar las anotaciones (N)" aria-pressed="true">Anotaciones</button>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  var ANCHO = 1440;
+  var stage = $('wf-stage');
+  var pantallas = [].slice.call(stage.querySelectorAll('.wf-screen'));
+  var NOTAS = __WF_NOTAS__;
+  var actual = 0, zoom = null, verNotas = true;
+
+  /* ═══════════ Encuadre ═══════════
+     Mismo cuidado que en el deck: el visor puede montar el contenedor en 0×0 y
+     ni requestAnimationFrame ni ResizeObserver entregan callbacks mientras eso
+     pasa. El vigía por temporizador es el único que sobrevive. */
+  var ultW = 0, ultH = 0;
+  function medidas(){
+    var v = $('wf-viewport');
+    return { w: v.clientWidth || 0, h: v.clientHeight || 0 };
+  }
+  function aplicar(){
+    var m = medidas();
+    if(!m.w || !m.h) return false;
+    var p = pantallas[actual];
+    var alto = p ? p.offsetHeight : 900;
+    var f = zoom !== null ? zoom : Math.min(m.w / (ANCHO + 80), m.h / (alto + 80));
+    if(!isFinite(f) || f <= 0) return false;
+    ultW = m.w; ultH = m.h;
+    stage.style.transform = 'translate(' + Math.max(0, (m.w - ANCHO * f) / 2) + 'px,' +
+                                           Math.max(0, (m.h - alto * f) / 2) + 'px) scale(' + f + ')';
+    $('zl').textContent = Math.round(f * 100) + '%';
+    return true;
+  }
+  function ajustar(){ zoom = null; aplicar(); }
+  window.addEventListener('resize', aplicar);
+  window.addEventListener('load', aplicar);
+  try{ if(window.ResizeObserver) new ResizeObserver(aplicar).observe(document.documentElement); }catch(e){}
+  (function vigilar(){
+    var n = 0, t = setInterval(function(){
+      var m = medidas();
+      if(m.w !== ultW || m.h !== ultH) aplicar();
+      if(++n > 120 || (ultW && n > 20)) clearInterval(t);
+    }, 250);
+  })();
+
+  /* ═══════════ Pantallas ═══════════ */
+  function ir(i){
+    actual = Math.max(0, Math.min(i, pantallas.length - 1));
+    pantallas.forEach(function(p, k){ p.classList.toggle('activa', k === actual); });
+    [].forEach.call(document.querySelectorAll('.pantalla-item'), function(b, k){
+      b.classList.toggle('sel', k === actual);
+    });
+    $('tit').textContent = (pantallas[actual] ? pantallas[actual].getAttribute('data-nombre') : '') +
+                           '  ·  ' + (actual + 1) + ' de ' + pantallas.length;
+    pintarNotas();
+    zoom = null;
+    aplicar();
+  }
+  pantallas.forEach(function(p, i){
+    var b = document.createElement('button');
+    b.className = 'pantalla-item' + (i === 0 ? ' sel' : '');
+    b.innerHTML = '<span class="n">' + (i + 1) + '</span><span></span>';
+    b.lastChild.textContent = p.getAttribute('data-nombre') || ('Pantalla ' + (i + 1));
+    b.onclick = function(){ ir(i); };
+    $('lista-pantallas').appendChild(b);
+  });
+  $('b-prev').onclick = function(){ ir(actual - 1); };
+  $('b-next').onclick = function(){ ir(actual + 1); };
+
+  /* ═══════════ Anotaciones ═══════════ */
+  function pintarNotas(){
+    [].forEach.call(stage.querySelectorAll('.wf-pin'), function(n){ n.remove(); });
+    var cont = $('lista-notas'); cont.innerHTML = '';
+    var lista = (NOTAS && NOTAS[actual]) || [];
+    $('sin-notas').style.display = lista.length ? 'none' : 'block';
+    lista.forEach(function(nota, i){
+      var pin = document.createElement('button');
+      pin.className = 'wf-pin'; pin.textContent = i + 1; pin.type = 'button';
+      pin.setAttribute('aria-label', 'Anotación ' + (i + 1) + ': ' + nota.t);
+      pin.style.left = nota.x + '%'; pin.style.top = nota.y + '%';
+      pantallas[actual].appendChild(pin);
+
+      var fila = document.createElement('button');
+      fila.className = 'nota'; fila.type = 'button';
+      fila.innerHTML = '<span class="b">' + (i + 1) + '</span><span></span>';
+      fila.lastChild.textContent = nota.t;
+      cont.appendChild(fila);
+
+      function foco(on){ pin.classList.toggle('foco', on); fila.classList.toggle('foco', on); }
+      pin.onmouseenter = fila.onmouseenter = function(){ foco(true); };
+      pin.onmouseleave = fila.onmouseleave = function(){ foco(false); };
+      fila.onclick = pin.onclick = function(){ foco(true); setTimeout(function(){ foco(false); }, 1400); };
+    });
+  }
+  $('b-notas').onclick = function(){
+    verNotas = !verNotas;
+    document.body.classList.toggle('sin-notas', !verNotas);
+    this.setAttribute('aria-pressed', String(verNotas));
+  };
+
+  /* ═══════════ Zoom ═══════════ */
+  function zoomPor(d){
+    var m = medidas(), p = pantallas[actual], alto = p ? p.offsetHeight : 900;
+    var base = zoom !== null ? zoom : Math.min(m.w / (ANCHO + 80), m.h / (alto + 80));
+    zoom = Math.max(0.15, Math.min(3, base * d));
+    aplicar();
+  }
+  $('b-mas').onclick   = function(){ zoomPor(1.2); };
+  $('b-menos').onclick = function(){ zoomPor(1 / 1.2); };
+  $('b-fit').onclick   = ajustar;
+
+  document.addEventListener('keydown', function(e){
+    if(e.target && e.target.isContentEditable) return;
+    if(e.key === 'ArrowRight'){ e.preventDefault(); ir(actual + 1); }
+    else if(e.key === 'ArrowLeft'){ e.preventDefault(); ir(actual - 1); }
+    else if(e.key === 'f' || e.key === 'F'){ ajustar(); }
+    else if(e.key === 'n' || e.key === 'N'){ $('b-notas').click(); }
+  });
+
+  /* ═══════════ API programática ═══════════
+     La usa el exportador headless. El wireframe no exporta ni descarga nada:
+     eso se pide en el chat (ver _shared/wireframe-engine/wireframe-engine.md). */
+  window.PCWire = {
+    count:  function(){ return pantallas.length; },
+    go:     ir,
+    nombre: function(i){ return pantallas[i] ? pantallas[i].getAttribute('data-nombre') : ''; },
+    notas:  function(i){ return (NOTAS && NOTAS[i]) || []; },
+    freeze: function(){ zoom = 1; aplicar(); }
+  };
+
+  ir(0);
+})();
+</script>

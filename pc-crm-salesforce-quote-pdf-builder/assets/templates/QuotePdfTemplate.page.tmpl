@@ -1,0 +1,325 @@
+<apex:page standardController="Quote" extensions="QuotePdfPageController{{SUFFIX}}" renderAs="pdf"
+           showHeader="false" standardStylesheets="false" applyHtmlTag="false" applyBodyTag="false">
+<html>
+<head>
+    <style type="text/css">
+        @page {
+            size: letter;
+            margin: 0 36px 30px;
+        }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 9.5pt;
+            color: #333333;
+        }
+        table.layout {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .brand-stripe {
+            width: 100%;
+            height: 8px;
+            background-color: #{{PRIMARY_COLOR_HEX}};
+            margin: 0 -36px 22px;
+            width: calc(100% + 72px);
+        }
+        .top-table td {
+            vertical-align: top;
+            padding: 0;
+        }
+        .company-name {
+            font-size: 15pt;
+            font-weight: bold;
+            color: #{{PRIMARY_COLOR_HEX}};
+            margin-top: 6px;
+            letter-spacing: 0.2px;
+        }
+        .muted-line {
+            font-size: 8.5pt;
+            color: #666666;
+            line-height: 1.6;
+        }
+        .pay-label {
+            font-size: 9pt;
+            font-weight: bold;
+            color: #{{DARK_COLOR_HEX}};
+            text-align: right;
+        }
+        .pay-line {
+            font-size: 8.5pt;
+            color: #666666;
+            text-align: right;
+            line-height: 1.6;
+        }
+        .divider {
+            border-top: 1px solid #d9d9d9;
+            margin: 16px 0;
+            font-size: 1px;
+            line-height: 1px;
+        }
+        .hero {
+            width: 100%;
+            background-color: #f7f7f7;
+            border-left: 4px solid #{{PRIMARY_COLOR_HEX}};
+            margin: 18px 0 20px;
+        }
+        .hero-table td {
+            vertical-align: middle;
+            padding: 14px 16px;
+        }
+        .hero-eyebrow {
+            font-size: 8pt;
+            font-weight: bold;
+            color: #{{PRIMARY_COLOR_HEX}};
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .hero-title {
+            font-size: 19pt;
+            font-weight: bold;
+            color: #{{DARK_COLOR_HEX}};
+            margin: 4px 0 2px;
+        }
+        .hero-subtitle {
+            font-size: 9pt;
+            color: #555555;
+        }
+        .section-label {
+            font-size: 9pt;
+            font-weight: bold;
+            color: #{{PRIMARY_COLOR_HEX}};
+            padding-bottom: 4px;
+            text-transform: uppercase;
+        }
+        .client-name {
+            font-size: 10.5pt;
+            font-weight: bold;
+            color: #{{DARK_COLOR_HEX}};
+        }
+        .meta-table {
+            width: 100%;
+        }
+        .meta-table td {
+            font-size: 9pt;
+            padding: 2px 0;
+        }
+        .meta-table td.k {
+            color: #666666;
+        }
+        .meta-table td.v {
+            text-align: right;
+            color: #{{DARK_COLOR_HEX}};
+            font-weight: bold;
+        }
+        .doc-title {
+            font-size: 17pt;
+            font-weight: bold;
+            color: #{{DARK_COLOR_HEX}};
+            margin: 26px 0 14px;
+        }
+        table.items {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table.items thead td {
+            background-color: #{{PRIMARY_COLOR_HEX}};
+            font-size: 8.5pt;
+            font-weight: bold;
+            color: #ffffff;
+            padding: 8px 6px;
+        }
+        table.items thead td.num,
+        table.items tbody td.num {
+            text-align: right;
+        }
+        table.items tbody td {
+            padding: 8px 6px;
+            border-bottom: 1px solid #ececec;
+            font-size: 9pt;
+        }
+        table.items tbody tr.odd td {
+            background-color: #fbfbfb;
+        }
+        table.totals-wrap {
+            width: 100%;
+            margin-top: 4px;
+        }
+        table.totals-inner {
+            width: 240px;
+            border-collapse: collapse;
+        }
+        table.totals-inner td {
+            padding: 6px 8px;
+            font-size: 9pt;
+        }
+        table.totals-inner td.k {
+            color: #666666;
+        }
+        table.totals-inner td.v {
+            text-align: right;
+        }
+        table.totals-inner tr.grand td {
+            background-color: #{{PRIMARY_COLOR_HEX}};
+            font-weight: bold;
+            color: #ffffff;
+            font-size: 10pt;
+            padding-top: 9px;
+            padding-bottom: 9px;
+        }
+        .terms-title {
+            font-size: 10pt;
+            font-weight: bold;
+            color: #{{PRIMARY_COLOR_HEX}};
+            margin-bottom: 6px;
+        }
+        .terms-body {
+            font-size: 9pt;
+            color: #444444;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="brand-stripe">&nbsp;</div>
+
+    <table class="layout top-table">
+        <tr>
+            <td style="width: 60%;">
+                <apex:image value="{!$Resource[branding.logoResourceName]}" width="{{LOGO_WIDTH}}" height="{{LOGO_HEIGHT}}"/>
+                <div class="company-name">{!branding.companyName}</div>
+                <div class="muted-line">
+                    {!branding.addressLine}<br/>
+                    {!branding.phone}<br/>
+                    {!branding.website} | {!branding.email}
+                </div>
+            </td>
+            <td style="width: 40%;">
+                <div class="pay-label">Datos de pago:</div>
+                <div class="pay-line">
+                    Cuenta: {!branding.paymentAccount}<br/>
+                    IBAN: {!branding.paymentIban}<br/>
+                    SWIFT: {!branding.paymentSwift}
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- HERO_BLOCK_START: only include this block if a real product photo was found on the client's site.
+         If no usable photo was found, DELETE this whole <div class="hero">...</div> block instead of
+         guessing dimensions or using a placeholder image — an absent hero beats a broken one. -->
+    <div class="hero">
+        <table class="hero-table layout">
+            <tr>
+                <td style="width: 55%;">
+                    <div class="hero-eyebrow">{{HERO_EYEBROW}}</div>
+                    <div class="hero-title">{{HERO_TITLE_LINE_1}}<br/>{{HERO_TITLE_LINE_2}}</div>
+                    <div class="hero-subtitle">{{HERO_SUBTITLE}}</div>
+                </td>
+                <td style="width: 45%; text-align: center;">
+                    <apex:image value="{!$Resource[branding.productPhotoResourceName]}" width="{{PHOTO_WIDTH}}" height="{{PHOTO_HEIGHT}}"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- HERO_BLOCK_END -->
+
+    <table class="layout top-table">
+        <tr>
+            <td style="width: 60%;">
+                <div class="section-label">Cliente:</div>
+                <div class="client-name">{!quoteRecord.Account.Name}</div>
+                <div class="muted-line">
+                    <apex:outputText value="{!quoteRecord.BillingStreet}, " rendered="{!NOT(ISBLANK(quoteRecord.BillingStreet))}"/>
+                    <apex:outputText value="{!quoteRecord.BillingCity}" rendered="{!NOT(ISBLANK(quoteRecord.BillingCity))}"/><br/>
+                    {!quoteRecord.BillingCountry}<br/>
+                    {!quoteRecord.Account.Phone}
+                </div>
+            </td>
+            <td style="width: 40%;">
+                <table class="meta-table">
+                    <tr>
+                        <td class="k">Cotización Nº</td>
+                        <td class="v">{!quoteRecord.QuoteNumber}</td>
+                    </tr>
+                    <tr>
+                        <td class="k">Fecha de emisión:</td>
+                        <td class="v"><apex:outputText value="{0,date,dd/MM/yyyy}"><apex:param value="{!quoteRecord.CreatedDate}"/></apex:outputText></td>
+                    </tr>
+                    <tr>
+                        <td class="k">Válida hasta:</td>
+                        <td class="v">
+                            <apex:outputText value="{0,date,dd/MM/yyyy}" rendered="{!NOT(ISNULL(quoteRecord.ExpirationDate))}">
+                                <apex:param value="{!quoteRecord.ExpirationDate}"/>
+                            </apex:outputText>
+                            <apex:outputText value="—" rendered="{!ISNULL(quoteRecord.ExpirationDate)}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="k">Vendedor:</td>
+                        <td class="v">{!quoteRecord.Opportunity.Owner.Name}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <div class="doc-title">COTIZACIÓN</div>
+
+    <table class="items">
+        <thead>
+            <tr>
+                <td style="width: 5%;">#</td>
+                <td style="width: 39%;">Producto</td>
+                <td class="num" style="width: 12%;">Cantidad</td>
+                <td class="num" style="width: 16%;">Precio</td>
+                <td class="num" style="width: 12%;">Descuento</td>
+                <td class="num" style="width: 16%;">Total</td>
+            </tr>
+        </thead>
+        <tbody>
+            <apex:variable var="rowIndex" value="{!0}"/>
+            <apex:repeat value="{!lineItems}" var="li">
+                <apex:variable var="rowIndex" value="{!rowIndex + 1}"/>
+                <tr class="{!IF(MOD(rowIndex, 2) == 0, 'odd', '')}">
+                    <td>{!rowIndex}</td>
+                    <td>{!li.Product2.Name}</td>
+                    <td class="num">{!li.Quantity}</td>
+                    <td class="num"><apex:outputField value="{!li.UnitPrice}"/></td>
+                    <td class="num"><apex:outputField value="{!li.Discount}"/></td>
+                    <td class="num"><apex:outputField value="{!li.TotalPrice}"/></td>
+                </tr>
+            </apex:repeat>
+        </tbody>
+    </table>
+
+    <table class="totals-wrap">
+        <tr>
+            <td style="text-align: right;">
+                <table class="totals-inner" align="right">
+                    <tr>
+                        <td class="k">Subtotal</td>
+                        <td class="v"><apex:outputField value="{!quoteRecord.Subtotal}"/></td>
+                    </tr>
+                    <tr>
+                        <td class="k">Descuento total</td>
+                        <td class="v">&minus; <apex:outputText value="{0, number, #,##0.00}"><apex:param value="{!totalDiscountAmount}"/></apex:outputText></td>
+                    </tr>
+                    <tr class="grand">
+                        <td class="k">Total</td>
+                        <td class="v"><apex:outputField value="{!quoteRecord.GrandTotal}"/></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <div style="margin-top: 46px;">
+        <div class="terms-title">Términos y Notas</div>
+        <div class="terms-body">
+            Gracias por confiar en {!branding.companyName}. Esta cotización es válida hasta la fecha indicada arriba.<br/>
+            Por favor realizá el pago antes de la fecha de vencimiento acordada.
+        </div>
+    </div>
+</body>
+</html>
+</apex:page>

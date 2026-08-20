@@ -1,0 +1,89 @@
+/**
+ * @description Vendor identity used to brand the Quote PDF for this org's demo persona ({{CLIENT_NAME}})
+ * @version 1.0.0
+ * @license Proprietary – ProContacto
+ * @author ProContacto
+ */
+public with sharing class QuotePdfBrandingConfig{{SUFFIX}} {
+
+    /**
+     * @description Company legal/trade name shown in the PDF header
+     */
+    public String companyName { get; private set; }
+
+    /**
+     * @description Single-line street/city address
+     */
+    public String addressLine { get; private set; }
+
+    /**
+     * @description Contact phone number
+     */
+    public String phone { get; private set; }
+
+    /**
+     * @description Public website URL
+     */
+    public String website { get; private set; }
+
+    /**
+     * @description Contact email address
+     */
+    public String email { get; private set; }
+
+    /**
+     * @description Bank account number for payment details
+     */
+    public String paymentAccount { get; private set; }
+
+    /**
+     * @description IBAN for payment details
+     */
+    public String paymentIban { get; private set; }
+
+    /**
+     * @description SWIFT/BIC code for payment details
+     */
+    public String paymentSwift { get; private set; }
+
+    /**
+     * @description Static resource name holding the company logo
+     */
+    public String logoResourceName { get; private set; }
+
+    /**
+     * @description Static resource name holding the showcase product photo
+     */
+    public String productPhotoResourceName { get; private set; }
+
+    /**
+     * @description Brand primary accent color (hex, no leading #)
+     */
+    public String primaryColor { get; private set; }
+
+    /**
+     * @description Brand dark/ink color used for body text (hex, no leading #)
+     */
+    public String darkColor { get; private set; }
+
+    /**
+     * @description Builds the current org's vendor branding used across Quote PDFs
+     * @return QuotePdfBrandingConfig{{SUFFIX}} Populated branding configuration
+     */
+    public static QuotePdfBrandingConfig{{SUFFIX}} getDefault() {
+        QuotePdfBrandingConfig{{SUFFIX}} config = new QuotePdfBrandingConfig{{SUFFIX}}();
+        config.companyName = '{{CLIENT_NAME}}';
+        config.addressLine = '{{ADDRESS_LINE}}';
+        config.phone = '{{PHONE}}';
+        config.website = '{{WEBSITE}}';
+        config.email = '{{EMAIL}}';
+        config.paymentAccount = '{{PAYMENT_ACCOUNT}}';
+        config.paymentIban = '{{PAYMENT_IBAN}}';
+        config.paymentSwift = '{{PAYMENT_SWIFT}}';
+        config.logoResourceName = '{{LOGO_RESOURCE_NAME}}';
+        config.productPhotoResourceName = '{{PHOTO_RESOURCE_NAME}}';
+        config.primaryColor = '{{PRIMARY_COLOR_HEX}}';
+        config.darkColor = '{{DARK_COLOR_HEX}}';
+        return config;
+    }
+}

@@ -1,0 +1,5 @@
+.slds-is-relative {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--lwc-spacingSmall);
+}
